@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Job Portal</title>
+  <style>
+    body {font-family: Arial, sans-serif; background: #f8f9fa; margin:0; padding:0;}
+    .top-bar {background: #343a40; color:white; padding: 8px 15px; text-align:right; font-size:14px;}
+    .top-bar a {color:#ffc107; text-decoration:none; font-weight:bold; margin-left:10px;}
+    header {background:#007bff; color:white; padding:15px; text-align:center;}
+    .container {max-width:1200px; margin:auto; padding:20px;}
+    .search-bar {display:flex; flex-wrap:wrap; gap:10px; margin-bottom:20px;}
+    .search-bar input, .search-bar select, .search-bar button {
+      padding:10px; border:1px solid #ddd; border-radius:8px; flex:1;
+    }
+    .search-bar button {background:#007bff; color:white; cursor:pointer; flex:0.5;}
+    .job-card {background:white; padding:20px; margin-bottom:15px; border-radius:12px; box-shadow:0 3px 8px rgba(0,0,0,0.1);}
+    .job-card h3 {color:#007bff;}
+    .job-card p {margin:5px 0;}
+    .job-location {font-size:14px; color:#555;}
+    .btn {display:inline-block; padding:10px 20px; border:none; border-radius:8px; background:#28a745; color:white; text-decoration:none; margin:5px 5px 0 0;}
+    .btn-share {background:#17a2b8;}
+    @media(max-width:768px){.search-bar{flex-direction:column;}.search-bar button{flex:1;}.top-bar{text-align:center;}}
+  </style>
+</head>
+<body>
+  <!-- Top Bar -->
+  <div class="top-bar">
+    📞 Customer Support: <a href="tel:+911234567890">+91 12345 67890</a> 
+    | <a href="#" onclick="shareApp()">📤 Share App</a>
+  </div>
+
+  <header>
+    <h1>Job Portal</h1>
+    <p>Find Your Dream Job Here</p>
+  </header>
+
+  <div class="container">
+    <!-- Filters -->
+    <div class="search-bar">
+      <input type="text" id="keyword" placeholder="Search by job title...">
+      <select id="location">
+        <option value="">Select City</option>
+        <option value="Delhi">Delhi</option>
+        <option value="Mumbai">Mumbai</option>
+        <option value="Bangalore">Bangalore</option>
+        <option value="Hyderabad">Hyderabad</option>
+      </select>
+      <button onclick="filterJobs()">Search</button>
+    </div>
+
+    <!-- Job Listings -->
+    <div id="job-list">
+      <div class="job-card" data-location="Delhi">
+        <h3>Web Developer</h3>
+        <p>Company: TechSoft</p>
+        <p class="job-location">Location: Delhi</p>
+        <p>Salary: ₹6,00,000 / year</p>
+        <a href="tel:+919876543210" class="btn">📞 Call</a>
+        <button class="btn btn-share" onclick="shareJob('Web Developer at TechSoft in Delhi, Salary ₹6,00,000/year')">📤 Share Job</button>
+      </div>
+
+      <div class="job-card" data-location="Mumbai">
+        <h3>Graphic Designer</h3>
+        <p>Company: DesignPro</p>
+        <p class="job-location">Location: Mumbai</p>
+        <p>Salary: ₹4,00,000 / year</p>
+        <a href="tel:+919112233445" class="btn">📞 Call</a>
+        <button class="btn btn-share" onclick="shareJob('Graphic Designer at DesignPro in Mumbai, Salary ₹4,00,000/year')">📤 Share Job</button>
+      </div>
+
+      <div class="job-card" data-location="Bangalore">
+        <h3>Data Analyst</h3>
+        <p>Company: DataWorks</p>
+        <p class="job-location">Location: Bangalore</p>
+        <p>Salary: ₹7,00,000 / year</p>
+        <a href="tel:+918800112233" class="btn">📞 Call</a>
+        <button class="btn btn-share" onclick="shareJob('Data Analyst at DataWorks in Bangalore, Salary ₹7,00,000/year')">📤 Share Job</button>
+      </div>
+
+      <div class="job-card" data-location="Hyderabad">
+        <h3>Software Engineer</h3>
+        <p>Company: CodeHub</p>
+        <p class="job-location">Location: Hyderabad</p>
+        <p>Salary: ₹8,00,000 / year</p>
+        <a href="tel:+917755443322" class="btn">📞 Call</a>
+        <button class="btn btn-share" onclick="shareJob('Software Engineer at CodeHub in Hyderabad, Salary ₹8,00,000/year')">📤 Share Job</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function filterJobs() {
+      let keyword = document.getElementById("keyword").value.toLowerCase();
+      let location = document.getElementById("location").value;
+      let jobs = document.querySelectorAll(".job-card");
+
+      jobs.forEach(job => {
+        let title = job.querySelector("h3").innerText.toLowerCase();
+        let jobLocation = job.getAttribute("data-location");
+        let show = true;
+
+        if (keyword && !title.includes(keyword)) {
+          show = false;
+        }
+        if (location && jobLocation !== location) {
+          show = false;
+        }
+
+        job.style.display = show ? "block" : "none";
+      });
+    }
+
+    function shareApp() {
+      if (navigator.share) {
+        navigator.share({
+          title: "Job Portal App",
+          text: "Check out this Job Portal to find your dream job!",
+          url: window.location.href
+        });
+      } else {
+        alert("Sharing not supported in this browser.");
+      }
+    }
+
+    function shareJob(details) {
+      if (navigator.share) {
+        navigator.share({
+          title: "Job Opportunity",
+          text: details,
+          url: window.location.href
+        });
+      } else {
+        alert("Sharing not supported in this browser.");
+      }
+    }
+  </script>
+</body>
+</html>
