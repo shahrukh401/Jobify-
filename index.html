@@ -1,45 +1,173 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Job Portal</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jobify - Find Your Dream Job</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <style>
-    body {font-family: Arial, sans-serif; background: #f8f9fa; margin:0; padding:0;}
-    .top-bar {background: #343a40; color:white; padding: 8px 15px; text-align:right; font-size:14px;}
-    .top-bar a {color:#ffc107; text-decoration:none; font-weight:bold; margin-left:10px;}
-    header {background:#007bff; color:white; padding:15px; text-align:center;}
-    .container {max-width:1200px; margin:auto; padding:20px;}
-    .search-bar {display:flex; flex-wrap:wrap; gap:10px; margin-bottom:20px;}
-    .search-bar input, .search-bar select, .search-bar button {
-      padding:10px; border:1px solid #ddd; border-radius:8px; flex:1;
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      background: #f4f6f9;
+      color: #333;
     }
-    .search-bar button {background:#007bff; color:white; cursor:pointer; flex:0.5;}
-    .job-card {background:white; padding:20px; margin-bottom:15px; border-radius:12px; box-shadow:0 3px 8px rgba(0,0,0,0.1);}
-    .job-card h3 {color:#007bff;}
-    .job-card p {margin:5px 0;}
-    .job-location {font-size:14px; color:#555;}
-    .btn {display:inline-block; padding:10px 20px; border:none; border-radius:8px; background:#28a745; color:white; text-decoration:none; margin:5px 5px 0 0;}
-    .btn-share {background:#17a2b8;}
-    @media(max-width:768px){.search-bar{flex-direction:column;}.search-bar button{flex:1;}.top-bar{text-align:center;}}
+
+    .top-bar {
+      background-color: #212529;
+      color: #fff;
+      font-size: 14px;
+      padding: 10px 20px;
+      text-align: right;
+    }
+
+    .top-bar a {
+      color: #ffc107;
+      text-decoration: none;
+      font-weight: bold;
+      margin-left: 15px;
+    }
+
+    header {
+      background: linear-gradient(90deg, #007bff, #0056b3);
+      color: #fff;
+      text-align: center;
+      padding: 30px 20px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 36px;
+      letter-spacing: 1px;
+    }
+
+    header p {
+      margin-top: 10px;
+      font-size: 18px;
+      font-weight: 300;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: auto;
+      padding: 30px 20px;
+    }
+
+    .search-bar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 30px;
+    }
+
+    .search-bar input,
+    .search-bar select,
+    .search-bar button {
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+      flex: 1;
+    }
+
+    .search-bar button {
+      background-color: #007bff;
+      color: white;
+      cursor: pointer;
+      flex: 0.5;
+      border: none;
+      transition: background 0.3s ease;
+    }
+
+    .search-bar button:hover {
+      background-color: #0056b3;
+    }
+
+    .job-card {
+      background-color: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+      transition: transform 0.2s;
+    }
+
+    .job-card:hover {
+      transform: scale(1.01);
+    }
+
+    .job-card h3 {
+      color: #007bff;
+      margin: 0 0 10px;
+    }
+
+    .job-card p {
+      margin: 6px 0;
+      font-size: 15px;
+    }
+
+    .job-location {
+      color: #555;
+      font-size: 14px;
+    }
+
+    .btn {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .btn-call {
+      background-color: #28a745;
+      color: white;
+      margin-right: 10px;
+    }
+
+    .btn-share {
+      background-color: #17a2b8;
+      color: white;
+    }
+
+    @media (max-width: 768px) {
+      .search-bar {
+        flex-direction: column;
+      }
+
+      .search-bar button {
+        flex: 1;
+      }
+
+      .top-bar {
+        text-align: center;
+      }
+    }
   </style>
 </head>
 <body>
+
   <!-- Top Bar -->
   <div class="top-bar">
-    📞 Customer Support: <a href="tel:+918087804339">+918087804339</a> 
-    | <a href="#" onclick="shareApp()">📤 Share App</a>
+    <i class="fas fa-phone"></i> <a href="tel:+918087804339">+91 80878 04339</a>
+    | <a href="#" onclick="shareApp()"><i class="fas fa-share-square"></i> Share App</a>
   </div>
 
+  <!-- Header -->
   <header>
     <h1>Jobify</h1>
     <p>Find Your Dream Job Here</p>
   </header>
 
+  <!-- Content -->
   <div class="container">
     <!-- Filters -->
     <div class="search-bar">
-      <input type="text" id="keyword" placeholder="Search by job title...">
+      <input type="text" id="keyword" placeholder="Search by job title..." />
       <select id="location">
         <option value="">Select City</option>
         <option value="Delhi">Delhi</option>
@@ -47,63 +175,65 @@
         <option value="Bangalore">Bangalore</option>
         <option value="Hyderabad">Hyderabad</option>
       </select>
-      <button onclick="filterJobs()">Search</button>
+      <button onclick="filterJobs()"><i class="fas fa-search"></i> Search</button>
     </div>
 
     <!-- Job Listings -->
     <div id="job-list">
       <div class="job-card" data-location="Delhi">
         <h3>Web Developer</h3>
-        <p>Company: TechSoft</p>
-        <p class="job-location">Location: Delhi</p>
-        <p>Salary: ₹6,00,000 / year</p>
-        <a href="tel:+919876543210" class="btn">📞 Call</a>
-        <button class="btn btn-share" onclick="shareJob('Web Developer at TechSoft in Delhi, Salary ₹6,00,000/year')">📤 Share Job</button>
+        <p><strong>Company:</strong> TechSoft</p>
+        <p class="job-location"><i class="fas fa-map-marker-alt"></i> Delhi</p>
+        <p><strong>Salary:</strong> ₹6,00,000 / year</p>
+        <a href="tel:+919876543210" class="btn btn-call"><i class="fas fa-phone"></i> Call</a>
+        <button class="btn btn-share" onclick="shareJob('Web Developer at TechSoft in Delhi, Salary ₹6,00,000/year')"><i class="fas fa-share-alt"></i> Share Job</button>
       </div>
 
       <div class="job-card" data-location="Mumbai">
         <h3>Graphic Designer</h3>
-        <p>Company: DesignPro</p>
-        <p class="job-location">Location: Mumbai</p>
-        <p>Salary: ₹4,00,000 / year</p>
-        <a href="tel:+919112233445" class="btn">📞 Call</a>
-        <button class="btn btn-share" onclick="shareJob('Graphic Designer at DesignPro in Mumbai, Salary ₹4,00,000/year')">📤 Share Job</button>
+        <p><strong>Company:</strong> DesignPro</p>
+        <p class="job-location"><i class="fas fa-map-marker-alt"></i> Mumbai</p>
+        <p><strong>Salary:</strong> ₹4,00,000 / year</p>
+        <a href="tel:+919112233445" class="btn btn-call"><i class="fas fa-phone"></i> Call</a>
+        <button class="btn btn-share" onclick="shareJob('Graphic Designer at DesignPro in Mumbai, Salary ₹4,00,000/year')"><i class="fas fa-share-alt"></i> Share Job</button>
       </div>
 
       <div class="job-card" data-location="Bangalore">
         <h3>Data Analyst</h3>
-        <p>Company: DataWorks</p>
-        <p class="job-location">Location: Bangalore</p>
-        <p>Salary: ₹7,00,000 / year</p>
-        <a href="tel:+918800112233" class="btn">📞 Call</a>
-        <button class="btn btn-share" onclick="shareJob('Data Analyst at DataWorks in Bangalore, Salary ₹7,00,000/year')">📤 Share Job</button>
+        <p><strong>Company:</strong> DataWorks</p>
+        <p class="job-location"><i class="fas fa-map-marker-alt"></i> Bangalore</p>
+        <p><strong>Salary:</strong> ₹7,00,000 / year</p>
+        <a href="tel:+918800112233" class="btn btn-call"><i class="fas fa-phone"></i> Call</a>
+        <button class="btn btn-share" onclick="shareJob('Data Analyst at DataWorks in Bangalore, Salary ₹7,00,000/year')"><i class="fas fa-share-alt"></i> Share Job</button>
       </div>
 
       <div class="job-card" data-location="Hyderabad">
         <h3>Software Engineer</h3>
-        <p>Company: CodeHub</p>
-        <p class="job-location">Location: Hyderabad</p>
-        <p>Salary: ₹8,00,000 / year</p>
-        <a href="tel:+917755443322" class="btn">📞 Call</a>
-        <button class="btn btn-share" onclick="shareJob('Software Engineer at CodeHub in Hyderabad, Salary ₹8,00,000/year')">📤 Share Job</button>
+        <p><strong>Company:</strong> CodeHub</p>
+        <p class="job-location"><i class="fas fa-map-marker-alt"></i> Hyderabad</p>
+        <p><strong>Salary:</strong> ₹8,00,000 / year</p>
+        <a href="tel:+917755443322" class="btn btn-call"><i class="fas fa-phone"></i> Call</a>
+        <button class="btn btn-share" onclick="shareJob('Software Engineer at CodeHub in Hyderabad, Salary ₹8,00,000/year')"><i class="fas fa-share-alt"></i> Share Job</button>
       </div>
     </div>
   </div>
 
+  <!-- JavaScript -->
   <script>
     function filterJobs() {
-      let keyword = document.getElementById("keyword").value.toLowerCase();
-      let location = document.getElementById("location").value;
-      let jobs = document.querySelectorAll(".job-card");
+      const keyword = document.getElementById("keyword").value.toLowerCase();
+      const location = document.getElementById("location").value;
+      const jobs = document.querySelectorAll(".job-card");
 
       jobs.forEach(job => {
-        let title = job.querySelector("h3").innerText.toLowerCase();
-        let jobLocation = job.getAttribute("data-location");
+        const title = job.querySelector("h3").innerText.toLowerCase();
+        const jobLocation = job.getAttribute("data-location");
         let show = true;
 
         if (keyword && !title.includes(keyword)) {
           show = false;
         }
+
         if (location && jobLocation !== location) {
           show = false;
         }
@@ -115,26 +245,6 @@
     function shareApp() {
       if (navigator.share) {
         navigator.share({
-          title: "Job Portal App",
-          text: "Check out this Job Portal to find your dream job!",
-          url: window.location.href
-        });
-      } else {
-        alert("Sharing not supported in this browser.");
-      }
-    }
-
-    function shareJob(details) {
-      if (navigator.share) {
-        navigator.share({
-          title: "Job Opportunity",
-          text: details,
-          url: window.location.href
-        });
-      } else {
-        alert("Sharing not supported in this browser.");
-      }
-    }
-  </script>
-</body>
-</html>
+          title: "Jobify - Find Your Dream Job",
+          text: "Check out Jobify – a platform to find your dream job!",
+         
