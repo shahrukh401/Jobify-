@@ -1,548 +1,345 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>HireHub — Job Portal (Single‑File)</title>
-  <meta name="description" content="Beautiful, fast, responsive job portal in a single HTML file (no external libs)." />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AuraJobs — Clean Job Portal</title>
+  <meta name="description" content="Beautiful, clean, single-file job portal: responsive, save jobs, login with email (demo), animated background, fully internal."/>
   <style>
-    /* —————— CSS RESET (tiny) —————— */
-    *,*::before,*::after{box-sizing:border-box}
-    html,body{margin:0;padding:0}
-    img{max-width:100%;display:block}
-    button,input,select,textarea{font:inherit}
     :root{
-      --bg:#f7f8fb; --card:#ffffff; --ink:#111827; --muted:#6b7280; --line:#e6e8ee; --brand:#2563eb; --brand-600:#1d4ed8; --brand-700:#1e40af; --ok:#059669; --warn:#d97706; --bad:#dc2626; --chip:#eef2ff; --shadow:0 10px 30px rgba(17,24,39,.08);
-      --radius:18px;
+      --bg-1:#f3f6ff; --bg-2:#eef9ff; --card:#ffffff; --muted:#667085; --accent-1:#7c3aed; --accent-2:#06b6d4; --success:#10b981; --danger:#ef4444; --glass: rgba(255,255,255,0.6);
+      --radius:14px; --shadow: 0 8px 24px rgba(16,24,40,0.08);
+      --max-width:1100px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
     }
-    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial; color:var(--ink); background:linear-gradient(180deg,#f8fafc 0%, #eef2ff 100%);}    
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;min-height:100%;background:linear-gradient(180deg,var(--bg-1),var(--bg-2));color:#0f172a;
+      -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+      display:flex;align-items:stretch;flex-direction:column;
+    }
 
-    /* —————— LAYOUT —————— */
-    .container{max-width:1200px;margin:0 auto;padding:24px}
-    .grid{display:grid;gap:20px}
+    /* Animated background (SVG + floating) */
+    .bg-wrap{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+    .bg-blob{position:absolute;width:60vmax;height:60vmax;border-radius:50%;filter:blur(60px);opacity:0.45;mix-blend-mode:overlay}
+    .blob-1{background:radial-gradient(circle at 30% 30%, #7c3aed, #4f46e5);left:-10%;top:-20%;}
+    .blob-2{background:radial-gradient(circle at 70% 70%, #06b6d4, #06b6d4);right:-15%;bottom:-25%;opacity:0.35}
+    .particle{position:absolute;border-radius:50%;opacity:0.12;background:linear-gradient(90deg, #fff, rgba(255,255,255,0.4));}
 
-    /* —————— NAV —————— */
-    .nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.7);backdrop-filter:saturate(180%) blur(10px);border-bottom:1px solid var(--line)}
-    .nav-wrap{display:flex;align-items:center;gap:18px;justify-content:space-between;padding:14px 20px}
-    .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:20px}
-    .brand-badge{width:34px;height:34px;border-radius:12px;background:conic-gradient(from 180deg at 50% 50%, #60a5fa, #93c5fd, #2563eb);box-shadow:var(--shadow)}
-    .nav-links{display:flex;gap:10px;flex-wrap:wrap}
-    .nav a,.nav button.link{padding:10px 14px;border-radius:12px;border:1px solid transparent;text-decoration:none;color:var(--ink);background:transparent}
-    .nav a.active{background:var(--chip);border-color:#e5e7ff}
-    .nav .cta{background:var(--brand);color:#fff;border-radius:12px;padding:10px 14px;border:none}
-    .nav .cta:hover{background:var(--brand-600)}
-    .hamburger{display:none;background:transparent;border:none;font-size:22px}
+    /* App frame */
+    .app{position:relative;z-index:2;max-width:var(--max-width);margin:40px auto;padding:28px;}
 
-    /* —————— HERO —————— */
-    .hero{padding:28px 20px}
-    .hero-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px}
-    .hero h1{font-size:28px;margin:0 0 6px}
-    .hero p{margin:0 0 16px;color:var(--muted)}
-    .searchbar{display:grid;grid-template-columns:1.2fr 1fr 1fr auto;gap:10px}
-    .field{position:relative}
-    .field input,.field select{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:#fff}
-    .btn{display:inline-flex;align-items:center;gap:8px;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:#fff;cursor:pointer}
-    .btn.primary{background:var(--brand);color:#fff;border-color:var(--brand)}
-    .btn.primary:hover{background:var(--brand-600)}
-    .btn.ghost{background:transparent}
+    /* Topbar */
+    header{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:18px}
+    .brand{display:flex;align-items:center;gap:14px}
+    .logo{width:52px;height:52px;border-radius:12px;background:linear-gradient(135deg,var(--accent-1),#4f46e5);display:grid;place-items:center;color:white;font-weight:700;box-shadow:var(--shadow)}
+    .brand h1{font-size:20px;margin:0}
 
-    /* —————— CONTENT LAYOUT —————— */
-    .content{display:grid;grid-template-columns:280px 1fr;gap:20px}
+    nav{display:flex;gap:10px;align-items:center}
+    .nav-link{padding:10px 12px;border-radius:10px;color:var(--muted);text-decoration:none;font-weight:600}
+    .nav-link.active{background:linear-gradient(90deg, rgba(255,255,255,0.6), rgba(255,255,255,0.3));box-shadow:var(--shadow);color:#0f172a}
 
-    /* —————— FILTERS —————— */
-    .filters{position:sticky;top:80px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px}
-    .filters h3{margin:0 0 6px;font-size:16px}
-    .filters .group{padding:12px;border:1px dashed var(--line);border-radius:12px;margin-bottom:10px}
+    .controls{display:flex;gap:10px;align-items:center}
+    .btn{background:var(--card);padding:10px 12px;border-radius:10px;border:1px solid rgba(15,23,42,0.04);cursor:pointer;font-weight:700}
+    .btn.primary{background:linear-gradient(90deg,var(--accent-1),#2563eb);color:white;border:none}
+    .pill{background:var(--glass);padding:8px 12px;border-radius:999px;border:1px solid rgba(255,255,255,0.35)}
+
+    /* Layout */
+    .main{display:grid;grid-template-columns:300px 1fr;gap:20px}
+    .card{background:var(--card);padding:18px;border-radius:var(--radius);box-shadow:var(--shadow)}
+
+    /* Filters */
+    .filters h3{margin:0 0 8px 0}
     .chips{display:flex;gap:8px;flex-wrap:wrap}
-    .chip{padding:8px 10px;border-radius:999px;background:var(--chip);border:1px solid #e5e7ff;cursor:pointer;font-size:13px}
-    .chip.active{background:#dbeafe}
+    .chip{padding:8px 10px;border-radius:999px;border:1px solid #eef2ff;background:linear-gradient(180deg,#fff,#fbfdff);cursor:pointer;font-weight:600}
+    .chip.active{background:linear-gradient(90deg,#ede9fe,#dbeafe);border-color:#c7b8ff}
+    .range{display:flex;gap:10px;align-items:center}
 
-    /* —————— JOB LIST —————— */
-    .jobs{display:grid;gap:14px}
-    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;display:grid;gap:10px}
-    .job-head{display:flex;gap:12px;align-items:center}
-    .logo{width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,#dbeafe,#93c5fd);display:grid;place-items:center;font-weight:800}
-    .job-title{font-size:18px;margin:0}
+    /* Job list */
+    .search-row{display:flex;gap:12px;margin-bottom:12px}
+    .search-row input{flex:1;padding:12px;border-radius:12px;border:1px solid #e6eefb}
+    .job-list{display:grid;gap:14px}
+    .job{display:flex;gap:12px;align-items:flex-start;padding:14px;border-radius:12px;border:1px solid rgba(15,23,42,0.04);}
+    .job .logo-sm{width:54px;height:54;border-radius:10px;background:linear-gradient(135deg,#fff,#f3f4f6);display:grid;place-items:center;font-weight:800;color:#1f2937}
+    .meta{display:flex;gap:8px;flex-wrap:wrap;color:var(--muted);font-weight:600}
+    .job h3{margin:0;font-size:16px}
+    .job p{margin:6px 0;color:var(--muted)}
+    .job-actions{margin-left:auto;display:flex;flex-direction:column;gap:8px}
+    .save-btn{background:transparent;border:2px dashed #e6eefb;padding:8px 12px;border-radius:8px;cursor:pointer}
+    .save-btn.saved{background:linear-gradient(90deg,#f0fdf4,#dcfce7);border-style:solid;border-color:rgba(16,185,129,0.15)}
+
+    /* Responsive */
+    @media (max-width:980px){.main{grid-template-columns:1fr}.filters{order:2}.job-actions{flex-direction:row;align-items:center}}
+
+    /* small utilities */
     .muted{color:var(--muted)}
-    .tags{display:flex;gap:8px;flex-wrap:wrap}
-    .tag{padding:6px 10px;border-radius:999px;border:1px solid var(--line);font-size:12px}
-    .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-    .job-actions{display:flex;gap:8px;align-items:center;justify-content:flex-end}
 
-    /* —————— PAGINATION —————— */
-    .pagination{display:flex;gap:8px;justify-content:center;align-items:center;margin:8px 0 0}
-    .pagination button{min-width:36px}
+    /* footer */
+    footer{margin-top:24px;text-align:center;color:var(--muted);font-size:13px}
 
-    /* —————— SECONDARY PAGES —————— */
-    .stack{display:grid;gap:14px}
-
-    /* —————— DRAWER / MODALS —————— */
-    dialog{border:none;border-radius:16px;box-shadow:var(--shadow);max-width:720px;width:calc(100% - 24px)}
-    dialog::backdrop{background:rgba(15,23,42,.4)}
-
-    /* —————— TOAST —————— */
-    .toast{position:fixed;right:16px;bottom:16px;background:#111827;color:#fff;padding:12px 14px;border-radius:12px;opacity:0;transform:translateY(10px);transition:.3s;z-index:60}
-    .toast.show{opacity:1;transform:none}
-
-    /* —————— RESPONSIVE —————— */
-    @media (max-width: 1024px){
-      .content{grid-template-columns:1fr}
-      .filters{display:none;position:fixed;inset:70px 10px auto;z-index:40}
-      .filters.show{display:block}
-      .hamburger{display:inline-flex}
-      .searchbar{grid-template-columns:1fr 1fr}
-    }
-    @media (max-width: 560px){
-      .searchbar{grid-template-columns:1fr}
-      .job-actions{justify-content:stretch}
-      .job-actions .btn{flex:1}
-    }
+    /* dialog styles */
+    dialog{border:none;border-radius:12px;padding:0;max-width:520px}
+    dialog .content{padding:18px}
+    .form-row{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
+    input[type=email],input[type=text]{padding:12px;border-radius:8px;border:1px solid #e6eefb}
   </style>
 </head>
 <body>
-  <!-- —————— NAVBAR —————— -->
-  <nav class="nav">
-    <div class="nav-wrap container">
+  <div class="bg-wrap" aria-hidden="true">
+    <div class="bg-blob blob-1"></div>
+    <div class="bg-blob blob-2"></div>
+    <!-- floating particles created by JS -->
+  </div>
+
+  <div class="app">
+    <header>
       <div class="brand">
-        <div class="brand-badge" aria-hidden="true"></div>
-        <span>HireHub</span>
+        <div class="logo">AJ</div>
+        <div>
+          <h1>AuraJobs</h1>
+          <div class="muted">Clean · Fast · Beautiful</div>
+        </div>
       </div>
-      <button class="hamburger" id="btnFilters" title="Filters">☰ Filters</button>
-      <div class="nav-links" role="navigation" aria-label="Primary">
-        <a href="#browse" data-route class="active">Browse</a>
-        <a href="#saved" data-route>Saved</a>
-        <a href="#applications" data-route>Applications</a>
-        <a href="#post" data-route>Post a Job</a>
-      </div>
-      <button class="cta" id="btnLogin">Login</button>
-    </div>
-  </nav>
 
-  <!-- —————— HERO —————— -->
-  <header class="hero container">
-    <div class="hero-card">
-      <h1>Find your next role, faster ⚡</h1>
-      <p>Search by title, location, experience or tags. Smooth UI, instant filters, no reloads.</p>
-      <div class="searchbar">
-        <label class="field" aria-label="Search keywords">
-          <input id="q" type="search" placeholder="Role, company or keyword… (e.g., React, Sales)" />
-        </label>
-        <label class="field" aria-label="Location">
-          <input id="loc" type="search" placeholder="Location (e.g., Mumbai)" />
-        </label>
-        <label class="field" aria-label="Experience">
-          <select id="exp">
-            <option value="">Any experience</option>
-            <option value="0-1">0–1 years</option>
-            <option value="1-3">1–3 years</option>
-            <option value="3-5">3–5 years</option>
-            <option value="5+">5+ years</option>
-          </select>
-        </label>
-        <button class="btn primary" id="btnSearch">Search</button>
-      </div>
-    </div>
-  </header>
+      <nav id="nav">
+        <a href="#jobs" class="nav-link active" data-route>Jobs</a>
+        <a href="#saved" class="nav-link" data-route>Saved</a>
+        <a href="#applications" class="nav-link" data-route>Applications</a>
+      </nav>
 
-  <!-- —————— MAIN —————— -->
-  <main class="container content">
-    <!-- Filters Sidebar -->
-    <aside class="filters" id="filters">
-      <h3>Quick Filters</h3>
-      <div class="group">
-        <strong>Job Type</strong>
-        <div class="chips" id="chipType"></div>
+      <div class="controls">
+        <div class="pill" id="userView">Guest</div>
+        <button class="btn" id="btnLogin">Login</button>
       </div>
-      <div class="group">
-        <strong>Mode</strong>
-        <div class="chips" id="chipMode"></div>
-      </div>
-      <div class="group">
-        <strong>Salary (₹ / month)</strong>
-        <input type="range" id="salaryRange" min="10" max="200" value="40" />
-        <div class="muted" id="salaryLabel">Up to ₹40k</div>
-      </div>
-      <div class="group">
-        <strong>Sort</strong>
-        <div class="chips" id="chipSort"></div>
-      </div>
-      <button class="btn ghost" id="btnClear">Clear Filters</button>
-    </aside>
+    </header>
 
-    <!-- Pages Wrapper -->
-    <section id="page">
-      <!-- Browse Page -->
-      <div id="page-browse" class="stack">
-        <div class="row" style="justify-content:space-between">
-          <div class="muted" id="resultsCount">0 results</div>
-          <div class="row">
-            <button class="btn" id="btnRefresh">Refresh</button>
+    <main class="main">
+      <aside class="card filters">
+        <h3>Filters</h3>
+        <div style="margin-bottom:12px">
+          <label class="muted">Job Type</label>
+          <div class="chips" id="filterType"></div>
+        </div>
+        <div style="margin-bottom:12px">
+          <label class="muted">Mode</label>
+          <div class="chips" id="filterMode"></div>
+        </div>
+        <div style="margin-bottom:12px">
+          <label class="muted">Max Salary (k)</label>
+          <div class="range"><input id="salaryRange" type="range" min="10" max="250" value="120"/><div id="salaryLabel" class="muted">Up to ₹120k</div></div>
+        </div>
+        <div style="margin-top:8px">
+          <button class="btn" id="btnClear">Clear</button>
+        </div>
+      </aside>
+
+      <section>
+        <div class="card">
+          <div class="search-row">
+            <input id="q" placeholder="Search by title, company or tag" />
+            <button class="btn primary" id="btnSearch">Search</button>
+          </div>
+
+          <div id="resultsInfo" class="muted" style="margin-bottom:8px">0 results</div>
+
+          <div id="jobList" class="job-list"></div>
+
+          <div style="display:flex;justify-content:center;margin-top:14px">
+            <button class="btn" id="btnPrev">Prev</button>
+            <div style="width:12px"></div>
+            <button class="btn" id="btnNext">Next</button>
           </div>
         </div>
-        <div class="jobs" id="jobs"></div>
-        <div class="pagination" id="pagination"></div>
-        <h3>Recently Viewed</h3>
-        <div class="jobs" id="recent"></div>
-      </div>
 
-      <!-- Saved Page -->
-      <div id="page-saved" class="stack" hidden>
-        <h2>Saved Jobs</h2>
-        <div class="jobs" id="savedJobs"></div>
-      </div>
+        <div style="margin-top:14px"></div>
+      </section>
+    </main>
 
-      <!-- Applications Page -->
-      <div id="page-applications" class="stack" hidden>
-        <h2>Your Applications</h2>
-        <div class="jobs" id="apps"></div>
-      </div>
+    <footer>Built with ❤️ — Demo portal. Data persists locally in your browser.</footer>
+  </div>
 
-      <!-- Post a Job Page -->
-      <div id="page-post" class="stack" hidden>
-        <h2>Post a Job</h2>
-        <form id="postForm" class="card grid" style="grid-template-columns:1fr 1fr">
-          <label>Title<input name="title" required placeholder="e.g., Frontend Developer" /></label>
-          <label>Company<input name="company" required placeholder="Your company name" /></label>
-          <label>Location<input name="location" required placeholder="City, Country" /></label>
-          <label>Type<select name="type" required>
-            <option>Full-time</option><option>Part-time</option><option>Contract</option><option>Internship</option>
-          </select></label>
-          <label>Mode<select name="mode" required>
-            <option>On-site</option><option>Remote</option><option>Hybrid</option>
-          </select></label>
-          <label>Experience<select name="experience" required>
-            <option>0-1</option><option>1-3</option><option>3-5</option><option>5+</option>
-          </select></label>
-          <label>Salary (₹/mo)<input name="salary" type="number" min="5000" step="1000" placeholder="e.g., 60000" required /></label>
-          <label style="grid-column:1/-1">Tags (comma separated)
-            <input name="tags" placeholder="e.g., React, Node, Sales" />
-          </label>
-          <label style="grid-column:1/-1">Description<textarea name="desc" rows="5" placeholder="Brief description & responsibilities" required></textarea></label>
-          <div class="row" style="justify-content:flex-end;grid-column:1/-1">
-            <button type="reset" class="btn">Reset</button>
-            <button class="btn primary">Publish Job</button>
-          </div>
-        </form>
-        <p class="muted">Tip: Everything persists locally (no server). You can export/import later.</p>
-      </div>
-    </section>
-  </main>
-
-  <!-- —————— DIALOGS —————— -->
-  <dialog id="jobDialog">
-    <form method="dialog" class="grid" style="gap:12px">
-      <div class="jobDetail"></div>
-      <menu class="row" style="justify-content:space-between">
-        <button class="btn" value="close">Close</button>
-        <div class="row">
-          <button class="btn" id="dlgSave">Save</button>
-          <button class="btn primary" id="dlgApply">Apply</button>
+  <!-- Login Dialog -->
+  <dialog id="loginDlg">
+    <div class="content">
+      <h3>Sign in with Email</h3>
+      <form id="loginForm">
+        <div class="form-row">
+          <label>Email</label>
+          <input type="email" id="email" required placeholder="you@domain.com" />
         </div>
-      </menu>
-    </form>
+        <div class="form-row">
+          <label>Full name (for display)</label>
+          <input type="text" id="fullname" placeholder="Jane Doe" />
+        </div>
+        <div style="display:flex;gap:8px;justify-content:flex-end">
+          <button type="button" class="btn" id="btnCancel">Cancel</button>
+          <button type="submit" class="btn primary">Sign in</button>
+        </div>
+      </form>
+    </div>
   </dialog>
-
-  <dialog id="loginDialog">
-    <form method="dialog" class="grid" style="gap:12px">
-      <h3>Login</h3>
-      <p class="muted">Demo login — just enter your name to personalize your experience.</p>
-      <label>Name<input id="loginName" placeholder="Your name" required/></label>
-      <menu class="row" style="justify-content:space-between">
-        <button class="btn" value="close">Cancel</button>
-        <button class="btn primary" id="doLogin">Login</button>
-      </menu>
-    </form>
-  </dialog>
-
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script>
-    // ————————————————————————————————————————————————
-    // UTILITIES
-    // ————————————————————————————————————————————————
-    const $ = (s,el=document)=>el.querySelector(s); const $$=(s,el=document)=>[...el.querySelectorAll(s)];
+    // ---------- App State ----------
     const state = {
-      page: 'browse',
-      q: '',
-      loc: '',
-      exp: '',
-      type: new Set(),
-      mode: new Set(),
-      sort: 'newest',
-      maxSalary: 40, // thousands per month
-      pageNo: 1,
-      perPage: 6,
-      user: JSON.parse(localStorage.getItem('hh_user')||'null'),
       jobs: [],
-      saved: new Set(JSON.parse(localStorage.getItem('hh_saved')||'[]')),
-      apps: JSON.parse(localStorage.getItem('hh_apps')||'[]'),
-      recent: JSON.parse(localStorage.getItem('hh_recent')||'[]'),
+      saved: new Set(JSON.parse(localStorage.getItem('aj_saved')||'[]')),
+      apps: JSON.parse(localStorage.getItem('aj_apps')||'[]'),
+      user: JSON.parse(localStorage.getItem('aj_user')||'null'),
+      filters: { type: new Set(), mode: new Set(), maxSalary: 120 },
+      q: '', page: 1, perPage: 6, sort: 'newest'
     };
-    const TOAST = $('#toast');
-    function toast(msg){ TOAST.textContent=msg; TOAST.classList.add('show'); setTimeout(()=>TOAST.classList.remove('show'),1600); }
-    function uid(){ return Math.random().toString(36).slice(2,9); }
 
-    // Seed jobs (only if none)
+    // ---------- Sample Data (seed) ----------
     const SEED = [
-      {title:'Frontend Developer', company:'Skyline Tech', location:'Bengaluru', type:'Full-time', mode:'Hybrid', experience:'1-3', salary:70, tags:['React','TypeScript','UI'], desc:'Build beautiful frontends with performance in mind.'},
-      {title:'Sales Executive', company:'Retailo', location:'Mumbai', type:'Full-time', mode:'On-site', experience:'0-1', salary:35, tags:['Sales','B2B','CRM'], desc:'Manage pipeline, demos and closures.'},
-      {title:'Data Analyst', company:'AnalytIQ', location:'Pune', type:'Contract', mode:'Remote', experience:'1-3', salary:90, tags:['SQL','Python','PowerBI'], desc:'Insights from data with dashboards & reports.'},
-      {title:'HR Intern', company:'PeopleFirst', location:'Delhi', type:'Internship', mode:'On-site', experience:'0-1', salary:15, tags:['HR','Onboarding','Recruitment'], desc:'Assist recruitment, onboarding, engagement.'},
-      {title:'Backend Engineer', company:'Cloudstreet', location:'Hyderabad', type:'Full-time', mode:'Remote', experience:'3-5', salary:110, tags:['Node','PostgreSQL','AWS'], desc:'APIs, databases, scalability.'},
-      {title:'UI/UX Designer', company:'PixelMint', location:'Remote', type:'Part-time', mode:'Remote', experience:'1-3', salary:60, tags:['Figma','Design Systems','Prototyping'], desc:'Craft clean, usable experiences.'},
-      {title:'Operations Manager', company:'SwiftLog', location:'Chennai', type:'Full-time', mode:'On-site', experience:'5+', salary:130, tags:['Ops','Logistics','Leadership'], desc:'Own ops KPIs and team growth.'},
-      {title:'Customer Support', company:'HelpHub', location:'Kolkata', type:'Full-time', mode:'Hybrid', experience:'0-1', salary:28, tags:['Support','Tickets','Communication'], desc:'Resolve issues with empathy.'}
+      {id:1,title:'Frontend Developer',company:'Aurora Soft',location:'Bengaluru, IN',type:'Full-time',mode:'Hybrid',experience:'1-3',salary:120,tags:['React','TypeScript','UI'],desc:'Build modern interfaces and reusable components.'},
+      {id:2,title:'Backend Engineer',company:'Nimbus Labs',location:'Remote',type:'Full-time',mode:'Remote',experience:'3-5',salary:180,tags:['Node','Databases','APIs'],desc:'Design scalable services and APIs.'},
+      {id:3,title:'Product Manager',company:'Orbit Co',location:'Mumbai, IN',type:'Full-time',mode:'On-site',experience:'5+',salary:220,tags:['Roadmap','Stakeholder'],desc:'Lead product strategy and delivery.'},
+      {id:4,title:'UI/UX Designer',company:'PixelCraft',location:'Pune, IN',type:'Part-time',mode:'Remote',experience:'1-3',salary:70,tags:['Figma','Prototyping'],desc:'Design delightful experiences.'},
+      {id:5,title:'Data Analyst',company:'DataMinds',location:'Hyderabad, IN',type:'Contract',mode:'Hybrid',experience:'1-3',salary:95,tags:['SQL','Python'],desc:'Extract insights and build dashboards.'},
+      {id:6,title:'Sales Executive',company:'SellWell',location:'Delhi, IN',type:'Full-time',mode:'On-site',experience:'0-1',salary:45,tags:['Sales','CRM'],desc:'Drive new client acquisitions.'},
+      {id:7,title:'DevOps Engineer',company:'CloudPulse',location:'Remote',type:'Full-time',mode:'Remote',experience:'3-5',salary:160,tags:['AWS','Kubernetes'],desc:'Improve CI/CD and infra.'},
+      {id:8,title:'Customer Success',company:'HappyUsers',location:'Chennai, IN',type:'Full-time',mode:'Hybrid',experience:'0-1',salary:40,tags:['Support','SaaS'],desc:'Help customers achieve success.'}
     ];
 
-    function loadJobs(){
-      const raw = JSON.parse(localStorage.getItem('hh_jobs')||'[]');
-      if(raw.length){ state.jobs = raw; return; }
-      state.jobs = SEED.map(j=>({id:uid(), created:Date.now()-Math.floor(Math.random()*9)*86400000, ...j}));
-      localStorage.setItem('hh_jobs', JSON.stringify(state.jobs));
+    // ---------- Utilities ----------
+    const $ = (s,el=document)=>el.querySelector(s);
+    const $$ = (s,el=document)=>[...el.querySelectorAll(s)];
+    const uid = ()=>Math.random().toString(36).slice(2,9);
+    function saveToStorage(){ localStorage.setItem('aj_saved', JSON.stringify([...state.saved])); localStorage.setItem('aj_apps', JSON.stringify(state.apps)); localStorage.setItem('aj_user', JSON.stringify(state.user)); }
+
+    // ---------- Init ----------
+    function init(){
+      // load jobs
+      state.jobs = JSON.parse(localStorage.getItem('aj_jobs')||'null') || SEED.map(j=>({ ...j, created: Date.now() - Math.floor(Math.random()*10)*86400000 }));
+      localStorage.setItem('aj_jobs', JSON.stringify(state.jobs));
+
+      // build filters
+      const types = [...new Set(state.jobs.map(j=>j.type))];
+      const modes = [...new Set(state.jobs.map(j=>j.mode))];
+      renderChips('#filterType', types, state.filters.type, onFilterChange);
+      renderChips('#filterMode', modes, state.filters.mode, onFilterChange);
+
+      // events
+      $('#q').addEventListener('input', e=>{ state.q = e.target.value.trim(); state.page=1; render(); });
+      $('#btnSearch').addEventListener('click', ()=>{ state.q = $('#q').value.trim(); state.page=1; render(); });
+      $('#salaryRange').addEventListener('input', e=>{ state.filters.maxSalary = +e.target.value; $('#salaryLabel').textContent = `Up to ₹${state.filters.maxSalary}k`; state.page=1; render(); });
+      $('#btnClear').addEventListener('click', ()=>{ state.filters.type.clear(); state.filters.mode.clear(); state.filters.maxSalary = 120; $('#salaryRange').value=120; $('#salaryLabel').textContent='Up to ₹120k'; $$('#filterType .chip').forEach(c=>c.classList.remove('active')); $$('#filterMode .chip').forEach(c=>c.classList.remove('active')); render(); });
+      $('#btnPrev').addEventListener('click', ()=>{ if(state.page>1){ state.page--; render(); } });
+      $('#btnNext').addEventListener('click', ()=>{ state.page++; render(); });
+
+      // login
+      $('#btnLogin').addEventListener('click', ()=>{ openLogin(); });
+      $('#btnCancel').addEventListener('click', ()=>$('#loginDlg').close());
+      $('#loginForm').addEventListener('submit', onLogin);
+
+      // routing nav
+      $$('[data-route]').forEach(a=>a.addEventListener('click', (e)=>{ e.preventDefault(); goto(a.getAttribute('href').slice(1)); }));
+
+      // populate defaults
+      if(state.user){ $('#userView').textContent = state.user.name || state.user.email; $('#btnLogin').textContent = 'Logout'; $('#btnLogin').addEventListener('click', onLogoutFlow); }
+
+      // floating particles
+      createParticles(22);
+
+      // initial render
+      goto('jobs');
     }
 
-    function saveJobs(){ localStorage.setItem('hh_jobs', JSON.stringify(state.jobs)); }
-    function saveSaved(){ localStorage.setItem('hh_saved', JSON.stringify([...state.saved])); }
-    function saveApps(){ localStorage.setItem('hh_apps', JSON.stringify(state.apps)); }
-    function saveRecent(){ localStorage.setItem('hh_recent', JSON.stringify(state.recent.slice(0,8))); }
-
-    // ————————————————————————————————————————————————
-    // RENDER HELPERS
-    // ————————————————————————————————————————————————
-    const TYPES=['Full-time','Part-time','Contract','Internship'];
-    const MODES=['On-site','Remote','Hybrid'];
-    const SORTS=[['newest','Newest'],['salary_desc','Salary ↓'],['salary_asc','Salary ↑']];
-
-    function chipRow(items, selectedSet, onChange){
-      return items.map(it=>{
-        const key=Array.isArray(it)?it[0]:it; const label=Array.isArray(it)?it[1]:it;
-        const el=document.createElement('button'); el.type='button'; el.className='chip'+(selectedSet.has(key)?' active':''); el.textContent=label; el.setAttribute('data-key', key);
-        el.addEventListener('click',()=>{ if(selectedSet.has(key)) selectedSet.delete(key); else selectedSet.add(key); onChange();});
-        return el;
+    // ---------- Render helpers ----------
+    function renderChips(selector, items, selectedSet, onChange){
+      const el = $(selector);
+      el.innerHTML = '';
+      items.forEach(it=>{
+        const b = document.createElement('button'); b.className='chip'; b.textContent = it; b.dataset.key = it;
+        if(selectedSet.has(it)) b.classList.add('active');
+        b.addEventListener('click', ()=>{ if(selectedSet.has(it)) selectedSet.delete(it); else selectedSet.add(it); b.classList.toggle('active'); onChange(); });
+        el.appendChild(b);
       });
     }
 
-    function fmtSalary(k){ return `₹${k}k/month`; }
+    function onFilterChange(){ state.page=1; render(); }
 
-    function jobCard(j){
-      const wrap=document.createElement('article'); wrap.className='card'; wrap.innerHTML=`
-        <div class="job-head">
-          <div class="logo" aria-hidden="true">${j.company[0]}</div>
-          <div>
-            <h3 class="job-title">${j.title}</h3>
-            <div class="muted">${j.company} • ${j.location}</div>
-          </div>
-        </div>
-        <div class="tags">
-          <span class="tag">${j.type}</span>
-          <span class="tag">${j.mode}</span>
-          <span class="tag">Exp: ${j.experience} yrs</span>
-          <span class="tag">${fmtSalary(j.salary)}</span>
-          ${j.tags.slice(0,4).map(t=>`<span class='tag'>${t}</span>`).join('')}
-        </div>
-        <div class="row" style="justify-content:space-between">
-          <span class="muted">Posted ${timeAgo(j.created)}</span>
-          <div class="job-actions">
-            <button class="btn" data-save>${state.saved.has(j.id)?'Unsave':'Save'}</button>
-            <button class="btn" data-view>View</button>
-            <button class="btn primary" data-apply>Apply</button>
-          </div>
-        </div>`;
-      wrap.querySelector('[data-save]').addEventListener('click',()=>toggleSave(j.id));
-      wrap.querySelector('[data-view]').addEventListener('click',()=>openJob(j));
-      wrap.querySelector('[data-apply]').addEventListener('click',()=>applyJob(j));
-      return wrap;
-    }
-
-    function timeAgo(ts){
-      const d=Math.floor((Date.now()-ts)/1000);
-      if(d<60) return 'just now';
-      const m=Math.floor(d/60); if(m<60) return `${m}m ago`;
-      const h=Math.floor(m/60); if(h<24) return `${h}h ago`;
-      const day=Math.floor(h/24); return `${day}d ago`;
-    }
-
-    function renderPagination(total){
-      const pages=Math.max(1, Math.ceil(total/state.perPage));
-      const el=$('#pagination'); el.innerHTML='';
-      const mk=(label,disabled,on)=>{const b=document.createElement('button'); b.className='btn'; b.textContent=label; b.disabled=disabled; b.addEventListener('click',on); return b;};
-      el.append(mk('Prev', state.pageNo<=1, ()=>{state.pageNo--; draw();}));
-      el.append(document.createTextNode(` Page ${state.pageNo} / ${pages} `));
-      el.append(mk('Next', state.pageNo>=pages, ()=>{state.pageNo++; draw();}));
-    }
-
-    // ————————————————————————————————————————————————
-    // FILTER & SEARCH
-    // ————————————————————————————————————————————————
     function applyFilters(list){
-      let out=list.filter(j=> j.salary <= state.maxSalary);
-      if(state.q){ const q=state.q.toLowerCase(); out=out.filter(j=> `${j.title} ${j.company} ${j.tags.join(' ')}`.toLowerCase().includes(q)); }
-      if(state.loc){ const l=state.loc.toLowerCase(); out=out.filter(j=> j.location.toLowerCase().includes(l)); }
-      if(state.exp){ out=out.filter(j=> j.experience===state.exp); }
-      if(state.type.size){ out=out.filter(j=> state.type.has(j.type)); }
-      if(state.mode.size){ out=out.filter(j=> state.mode.has(j.mode)); }
-      if(state.sort==='salary_desc') out.sort((a,b)=>b.salary-a.salary);
-      else if(state.sort==='salary_asc') out.sort((a,b)=>a.salary-b.salary);
-      else out.sort((a,b)=>b.created-a.created);
+      let out = list.filter(j=> j.salary <= state.filters.maxSalary);
+      if(state.q) { const q = state.q.toLowerCase(); out = out.filter(j=> (j.title+' '+j.company+' '+j.tags.join(' ')).toLowerCase().includes(q)); }
+      if(state.filters.type.size) out = out.filter(j=> state.filters.type.has(j.type));
+      if(state.filters.mode.size) out = out.filter(j=> state.filters.mode.has(j.mode));
+      out.sort((a,b)=> b.created - a.created);
       return out;
     }
 
-    function draw(){
-      const filtered=applyFilters(state.jobs);
-      $('#resultsCount').textContent = `${filtered.length} result${filtered.length!==1?'s':''}`;
-      const start=(state.pageNo-1)*state.perPage;
-      const pageItems=filtered.slice(start,start+state.perPage);
-      const list=$('#jobs'); list.innerHTML='';
-      pageItems.forEach(j=>list.append(jobCard(j)));
-      renderPagination(filtered.length);
-      // Recent
-      const r=$('#recent'); r.innerHTML='';
-      state.recent.forEach(id=>{ const j=state.jobs.find(x=>x.id===id); if(j) r.append(jobCard(j)); });
+    function render(){
+      const list = applyFilters(state.jobs);
+      const total = list.length; const pages = Math.max(1, Math.ceil(total/state.perPage));
+      if(state.page>pages) state.page = pages;
+      const start = (state.page-1)*state.perPage; const pageItems = list.slice(start, start+state.perPage);
+
+      $('#resultsInfo').textContent = `${total} result${total!==1?'s':''}`;
+      const wrap = $('#jobList'); wrap.innerHTML='';
+      pageItems.forEach(j=>wrap.append(createJobCard(j)));
+
+      // disable prev/next accordingly
+      $('#btnPrev').disabled = state.page<=1; $('#btnNext').disabled = state.page>=pages;
     }
 
-    // ————————————————————————————————————————————————
-    // JOB ACTIONS
-    // ————————————————————————————————————————————————
-    function toggleSave(id){ if(state.saved.has(id)){ state.saved.delete(id); toast('Removed from saved'); } else { state.saved.add(id); toast('Saved job'); } saveSaved(); drawSaved(); draw(); }
-
-    function openJob(j){
-      // push to recent (unique, unshift)
-      state.recent = [j.id, ...state.recent.filter(x=>x!==j.id)].slice(0,8); saveRecent();
-      const dlg=$('#jobDialog');
-      const box=dlg.querySelector('.jobDetail');
-      box.innerHTML = `
-        <h3 style="margin:0">${j.title} — <span class="muted">${j.company}</span></h3>
-        <div class="tags" style="margin-top:6px">
-          <span class="tag">${j.location}</span>
-          <span class="tag">${j.type}</span>
-          <span class="tag">${j.mode}</span>
-          <span class="tag">Exp ${j.experience} yrs</span>
-          <span class="tag">${fmtSalary(j.salary)}</span>
-          ${j.tags.map(t=>`<span class='tag'>${t}</span>`).join('')}
+    function createJobCard(j){
+      const el = document.createElement('div'); el.className='job';
+      el.innerHTML = `
+        <div class="logo-sm">${j.company.split(' ')[0][0]||'A'}</div>
+        <div style="flex:1">
+          <h3>${j.title}</h3>
+          <div class="meta">${j.company} • ${j.location} • ${j.experience} yrs</div>
+          <p class="muted">${j.desc}</p>
+          <div style="margin-top:8px" class="meta">${j.tags.map(t=>`<span style='padding:4px 8px;border-radius:999px;background:#f1f5f9;font-weight:700;font-size:12px;margin-right:6px'>${t}</span>`).join('')}</div>
         </div>
-        <p>${j.desc}</p>
-      `;
-      $('#dlgSave').onclick=(e)=>{e.preventDefault(); toggleSave(j.id)};
-      $('#dlgApply').onclick=(e)=>{e.preventDefault(); applyJob(j)};
-      dlg.showModal();
-      draw();
+        <div class="job-actions">
+          <div style="text-align:right;margin-bottom:6px;font-weight:800;color:#0f172a">₹${j.salary}k</div>
+          <button class="save-btn ${state.saved.has(j.id)?'saved':''}" data-id="${j.id}">${state.saved.has(j.id)?'Saved':'Save'}</button>
+          <button class="btn primary" style="margin-top:6px" data-apply="${j.id}">Apply</button>
+        </div>`;
+
+      el.querySelector('[data-apply]').addEventListener('click', ()=>{ applyJob(j); });
+      const sb = el.querySelector('.save-btn'); sb.addEventListener('click', ()=>{ toggleSave(j.id, sb); });
+      return el;
     }
 
-    function applyJob(j){
-      const name = state.user?.name || 'Guest';
-      const exists = state.apps.find(a=>a.jobId===j.id);
-      if(exists){ toast('You already applied'); return; }
-      state.apps.unshift({id:uid(), jobId:j.id, title:j.title, company:j.company, when:Date.now(), status:'Submitted', applicant:name});
-      saveApps(); toast('Application submitted');
-      drawApps();
+    // ---------- Actions ----------
+    function toggleSave(id, btn){ if(state.saved.has(id)){ state.saved.delete(id); btn.classList.remove('saved'); btn.textContent='Save'; toast('Removed from saved'); } else { state.saved.add(id); btn.classList.add('saved'); btn.textContent='Saved'; toast('Saved'); } saveToStorage(); }
+
+    function applyJob(job){ if(!state.user){ toast('Please sign in to apply'); openLogin(); return; } state.apps.unshift({id:uid(), jobId:job.id, title:job.title, company:job.company, when:Date.now(), applicant:state.user.email}); saveToStorage(); toast('Application submitted'); renderApps(); goto('applications'); }
+
+    function renderApps(){ const wrap = document.getElementById('jobList'); /* no-op to keep list updated */ const listEl = document.getElementById('applicationsList'); listEl.innerHTML=''; if(!state.apps.length) listEl.innerHTML='<li class="muted">No applications yet</li>'; else state.apps.forEach(a=>{ const li = document.createElement('li'); li.textContent = `${a.title} — ${a.company} (${new Date(a.when).toLocaleString()})`; listEl.appendChild(li); }); }
+
+    // ---------- Login ----------
+    function openLogin(){ const dlg = $('#loginDlg'); dlg.showModal(); }
+    function onLogin(e){ e.preventDefault(); const email = $('#email').value.trim(); const name = $('#fullname').value.trim() || email.split('@')[0]; if(!validateEmail(email)){ alert('Enter a valid email'); return; } state.user = { email, name }; saveToStorage(); $('#userView').textContent = name; $('#btnLogin').textContent = 'Logout'; $('#loginDlg').close(); toast(`Welcome, ${name}`); }
+    function onLogoutFlow(){ if(confirm('Logout?')){ state.user = null; localStorage.removeItem('aj_user'); $('#userView').textContent = 'Guest'; $('#btnLogin').textContent = 'Login'; toast('Logged out'); } }
+    function validateEmail(e){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
+
+    // ---------- Routing ----------
+    function clearActiveNav(){ $$('#nav .nav-link').forEach(a=>a.classList.remove('active')); }
+    function goto(section){ clearActiveNav(); const el = $(`[href='#${section}']`); if(el) el.classList.add('active'); $$('.main > *').forEach(n=>n.hidden=false); // both aside and section visible
+      // hide sections by showing/hiding content inside main: we have aside + section; to simulate pages, scroll
+      if(section==='jobs'){ window.scrollTo({top:0,behavior:'smooth'}); render(); }
+      if(section==='saved'){ showSaved(); }
+      if(section==='applications'){ renderApps(); }
     }
 
-    // ————————————————————————————————————————————————
-    // PAGES
-    // ————————————————————————————————————————————————
-    function route(hash){
-      const page=(hash||'#browse').replace('#','');
-      state.page=page; $$('#page > div').forEach(d=>d.hidden=true);
-      $('#page-'+page).hidden=false;
-      $$('.nav a').forEach(a=>a.classList.toggle('active', a.getAttribute('href')==='#'+page));
-      if(page==='saved') drawSaved();
-      if(page==='applications') drawApps();
-      if(page==='browse') draw();
-      if(page==='post') {/* nothing */}
-    }
+    function showSaved(){ const savedIds = [...state.saved]; const items = state.jobs.filter(j=> savedIds.includes(j.id)); $('#resultsInfo').textContent = `${items.length} saved`; const wrap = $('#jobList'); wrap.innerHTML=''; if(!items.length) wrap.innerHTML='<div class="muted">No saved jobs</div>'; else items.forEach(j=>wrap.append(createJobCard(j))); }
 
-    function drawSaved(){
-      const wrap=$('#savedJobs'); wrap.innerHTML='';
-      const list=[...state.saved].map(id=>state.jobs.find(j=>j.id===id)).filter(Boolean);
-      if(!list.length){ wrap.innerHTML='<p class="muted">No saved jobs yet.</p>'; return; }
-      list.forEach(j=>wrap.append(jobCard(j)));
+    // ---------- Particles ----------
+    function createParticles(n){ const wrap = document.querySelector('.bg-wrap'); for(let i=0;i<n;i++){ const p = document.createElement('div'); p.className='particle'; const size = 6+Math.random()*40; p.style.width = p.style.height = size+'px'; p.style.left = Math.random()*100+'%'; p.style.top = Math.random()*100+'%'; p.style.background = `radial-gradient(circle at 30% 30%, rgba(255,255,255,0.6), rgba(255,255,255,0.2))`; p.style.opacity = 0.08 + Math.random()*0.12; p.style.transform = `translateY(${Math.random()*10}px)`; wrap.appendChild(p); animateParticle(p); }
     }
+    function animateParticle(el){ const dur = 8000 + Math.random()*12000; const start = Math.random()*1000; el.animate([ {transform:`translateY(0px) translateX(0px)`, opacity:el.style.opacity }, {transform:`translateY(-60vh) translateX(${(Math.random()-0.5)*20}vw)`, opacity:0 } ], {duration:dur, iterations:Infinity, delay:start}); }
 
-    function drawApps(){
-      const wrap=$('#apps'); wrap.innerHTML='';
-      if(!state.apps.length){ wrap.innerHTML='<p class="muted">No applications yet.</p>'; return; }
-      state.apps.forEach(a=>{
-        const j = state.jobs.find(x=>x.id===a.jobId) || {location:'—', experience:'—', salary:'—', mode:'—', type:'—', tags:[]};
-        const card=document.createElement('article'); card.className='card';
-        card.innerHTML=`
-          <div class="row" style="justify-content:space-between">
-            <div>
-              <h3 class="job-title" style="margin:0">${a.title} <span class="muted">— ${a.company}</span></h3>
-              <div class="muted">Applied ${timeAgo(a.when)} • Status: ${a.status}</div>
-            </div>
-            <div class="row">
-              <button class="btn" data-withdraw>Withdraw</button>
-            </div>
-          </div>`;
-        card.querySelector('[data-withdraw]').addEventListener('click',()=>{
-          state.apps = state.apps.filter(x=>x.id!==a.id); saveApps(); drawApps(); toast('Application withdrawn');
-        });
-        wrap.append(card);
-      });
-    }
+    // ---------- Toast ----------
+    let toastTimer = null;
+    function toast(msg){ const t = document.createElement('div'); t.style.position='fixed'; t.style.right='20px'; t.style.bottom='20px'; t.style.background='rgba(15,23,42,0.9)'; t.style.color='white'; t.style.padding='10px 14px'; t.style.borderRadius='10px'; t.style.zIndex=9999; t.textContent=msg; document.body.appendChild(t); clearTimeout(toastTimer); toastTimer = setTimeout(()=>{ t.style.transition='opacity 300ms'; t.style.opacity=0; setTimeout(()=>t.remove(),300); },1600); }
 
-    // ————————————————————————————————————————————————
-    // EVENTS & INIT
-    // ————————————————————————————————————————————————
-    function initFilters(){
-      const trow=$('#chipType'); trow.innerHTML=''; chipRow(TYPES, state.type, ()=>{state.pageNo=1; draw();}).forEach(b=>trow.append(b));
-      const mrow=$('#chipMode'); mrow.innerHTML=''; chipRow(MODES, state.mode, ()=>{state.pageNo=1; draw();}).forEach(b=>mrow.append(b));
-      const srow=$('#chipSort'); srow.innerHTML=''; chipRow(SORTS, new Set([state.sort]), ()=>{}).forEach(b=>{
-        b.addEventListener('click',()=>{ state.sort=b.dataset.key; srow.querySelectorAll('.chip').forEach(c=>c.classList.remove('active')); b.classList.add('active'); draw(); });
-        srow.append(b);
-      });
-      const range=$('#salaryRange'); const label=$('#salaryLabel');
-      range.addEventListener('input',()=>{ state.maxSalary=+range.value; label.textContent=`Up to ₹${range.value}k`; state.pageNo=1; draw(); });
-      label.textContent=`Up to ₹${range.value}k`;
-    }
-
-    function initSearch(){
-      let t; function schedule(){ clearTimeout(t); t=setTimeout(()=>{ state.pageNo=1; draw(); },180); }
-      $('#q').addEventListener('input', e=>{ state.q=e.target.value.trim(); schedule(); });
-      $('#loc').addEventListener('input', e=>{ state.loc=e.target.value.trim(); schedule(); });
-      $('#exp').addEventListener('change', e=>{ state.exp=e.target.value; schedule(); });
-      $('#btnSearch').addEventListener('click', ()=>{ state.pageNo=1; draw(); });
-      $('#btnRefresh').addEventListener('click', ()=>{ draw(); toast('Refreshed'); });
-      $('#btnClear').addEventListener('click', ()=>{ state.q=''; state.loc=''; state.exp=''; state.type.clear(); state.mode.clear(); state.sort='newest'; state.maxSalary=40; initFilters(); $('#q').value=''; $('#loc').value=''; $('#exp').value=''; $('#salaryRange').value=40; draw(); });
-    }
-
-    function initRouting(){
-      addEventListener('hashchange',()=>route(location.hash));
-      $$('.nav [data-route]').forEach(a=>a.addEventListener('click',()=>setTimeout(()=>route(location.hash),0)));
-      route(location.hash||'#browse');
-    }
-
-    function initPost(){
-      $('#postForm').addEventListener('submit', e=>{
-        e.preventDefault(); const fd=new FormData(e.target);
-        const job={ id:uid(), created:Date.now(), title:fd.get('title').trim(), company:fd.get('company').trim(), location:fd.get('location').trim(), type:fd.get('type'), mode:fd.get('mode'), experience:fd.get('experience'), salary:Math.max(10, Math.min(200, Math.round(+fd.get('salary')/1000))), tags:(fd.get('tags')||'').split(',').map(s=>s.trim()).filter(Boolean), desc:fd.get('desc').trim() };
-        state.jobs.unshift(job); saveJobs(); toast('Job published'); location.hash='#browse'; route('#browse'); draw();
-        e.target.reset();
-      });
-    }
-
-    function initLogin(){
-      const dlg=$('#loginDialog');
-      $('#btnLogin').addEventListener('click', ()=>dlg.showModal());
-      $('#doLogin').addEventListener('click', (e)=>{ e.preventDefault(); const name=$('#loginName').value.trim(); if(!name){ toast('Enter your name'); return; } state.user={name}; localStorage.setItem('hh_user', JSON.stringify(state.user)); dlg.close(); toast(`Welcome, ${name}!`); });
-    }
-
-    function initMobileFilters(){
-      const panel=$('#filters'); const btn=$('#btnFilters');
-      btn.addEventListener('click', ()=>{ panel.classList.toggle('show'); });
-      addEventListener('click', (e)=>{ if(innerWidth>1024) return; if(!panel.contains(e.target) && e.target!==btn && panel.classList.contains('show')) panel.classList.remove('show'); });
-    }
-
-    // Init app
-    loadJobs();
-    initFilters();
-    initSearch();
-    initRouting();
-    initPost();
-    initLogin();
-    initMobileFilters();
-    draw();
+    // ---------- Init call ----------
+    init();
   </script>
 </body>
 </html>
-
