@@ -15,24 +15,22 @@
       --accent: #f39c12;
       --light: #f8f9fa;
       --dark: #2c3e50;
+      --light-gray: #e9ecef;
+      --medium-gray: #dee2e6;
+    }
+    
+    * {
+      box-sizing: border-box;
     }
     
     body {
       margin: 0;
       min-height: 100vh;
-      background: linear-gradient(120deg, #a1c4fd, #c2e9fb, #fbc2eb, #a6c1ee);
-      background-size: 400% 400%;
-      animation: gradientBG 15s ease infinite;
+      background: linear-gradient(to bottom, #f8f9fa, #e9ecef);
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      overflow-x: hidden;
       color: #333;
       padding-top: 80px; /* Account for fixed navbar */
-    }
-    
-    @keyframes gradientBG {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
+      line-height: 1.6;
     }
     
     .navbar {
@@ -41,11 +39,10 @@
       left: 0;
       right: 0;
       z-index: 1030;
-      border-radius: 0 0 15px 15px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-      background: rgba(255, 255, 255, 0.95) !important;
-      backdrop-filter: blur(10px);
-      padding: 10px 0;
+      background: white !important;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 12px 0;
+      border-bottom: 1px solid var(--medium-gray);
     }
     
     .navbar-brand {
@@ -58,21 +55,10 @@
       padding: 40px 0 50px;
       color: var(--dark);
       text-align: center;
-      position: relative;
-      z-index: 1;
-    }
-    
-    .hero-section::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(255, 255, 255, 0.7);
-      border-radius: 20px;
-      z-index: -1;
-      margin: 0 20px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      margin: 20px 0;
     }
     
     .search-bar {
@@ -85,7 +71,13 @@
       border-radius: 50px;
       padding: 15px 25px;
       border: 2px solid var(--primary);
-      box-shadow: 0 5px 20px rgba(52, 152, 219, 0.25);
+      box-shadow: 0 3px 10px rgba(52, 152, 219, 0.15);
+      font-size: 1rem;
+    }
+    
+    .search-bar input:focus {
+      outline: none;
+      box-shadow: 0 3px 15px rgba(52, 152, 219, 0.25);
     }
     
     .search-bar button {
@@ -102,29 +94,29 @@
     .search-bar button:hover {
       background: #2980b9;
       transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
     }
     
     .job-card {
       border-radius: 12px;
       background: #fff;
       padding: 25px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.06);
       transition: all 0.3s ease;
       height: 100%;
-      border-top: 5px solid var(--primary);
+      border-left: 4px solid var(--primary);
       margin-bottom: 20px;
+      border: 1px solid var(--medium-gray);
     }
     
     .job-card:hover {
-      transform: translateY(-7px);
-      box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
     }
     
     .company-logo {
       width: 60px;
       height: 60px;
-      border-radius: 12px;
+      border-radius: 10px;
       background: var(--light);
       display: flex;
       align-items: center;
@@ -132,7 +124,7 @@
       font-weight: bold;
       color: var(--primary);
       margin-bottom: 15px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      border: 1px solid var(--medium-gray);
       font-size: 1.2rem;
     }
     
@@ -171,7 +163,11 @@
       width: 100%;
       text-align: left;
       position: relative;
-      box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+      transition: all 0.3s;
+    }
+    
+    .filter-toggle:hover {
+      background: #2980b9;
     }
     
     .filter-toggle:after {
@@ -184,16 +180,13 @@
       transform: translateY(-50%);
     }
     
-    .filter-toggle.collapsed:after {
-      content: '\f0b0';
-    }
-    
     .filter-box {
       background: #fff;
       padding: 20px;
       border-radius: 12px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.06);
       margin-bottom: 25px;
+      border: 1px solid var(--medium-gray);
     }
     
     .filter-header {
@@ -202,13 +195,13 @@
       align-items: center;
       margin-bottom: 20px;
       padding-bottom: 15px;
-      border-bottom: 2px solid #eee;
+      border-bottom: 1px solid var(--medium-gray);
     }
     
     .filter-section {
       margin-bottom: 20px;
       padding-bottom: 15px;
-      border-bottom: 1px solid #eee;
+      border-bottom: 1px solid var(--medium-gray);
     }
     
     .filter-title {
@@ -232,17 +225,15 @@
       transition: all 0.3s;
       width: 100%;
       margin-top: 10px;
-      box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
     }
     
     .apply-btn:hover {
       background: #2980b9;
       transform: translateY(-2px);
-      box-shadow: 0 6px 15px rgba(52, 152, 219, 0.4);
     }
     
     .reset-btn {
-      background: #e74c3c;
+      background: #6c757d;
       border: none;
       border-radius: 8px;
       padding: 12px 25px;
@@ -251,13 +242,11 @@
       width: 100%;
       margin-top: 10px;
       color: white;
-      box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);
     }
     
     .reset-btn:hover {
-      background: #c0392b;
+      background: #5a6268;
       transform: translateY(-2px);
-      box-shadow: 0 6px 15px rgba(231, 76, 60, 0.4);
     }
     
     .view-more {
@@ -273,14 +262,11 @@
       border-radius: 50px;
       font-weight: 600;
       transition: all 0.3s;
-      box-shadow: 0 4px 10px rgba(52, 152, 219, 0.2);
     }
     
     .view-more-btn:hover {
       background: var(--primary);
       color: white;
-      transform: translateY(-2px);
-      box-shadow: 0 6px 15px rgba(52, 152, 219, 0.3);
     }
     
     .support-badge {
@@ -290,11 +276,10 @@
       border-radius: 50px;
       font-weight: 600;
       font-size: 0.9rem;
-      box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
     }
     
     .job-meta {
-      color: #7f8c8d;
+      color: #6c757d;
       font-size: 0.9rem;
       margin-bottom: 5px;
     }
@@ -308,10 +293,6 @@
       display: none;
     }
     
-    /* Hide scrollbar */
-    ::-webkit-scrollbar { display: none; }
-    body { -ms-overflow-style: none; scrollbar-width: none; }
-    
     /* Responsive adjustments */
     @media (max-width: 768px) {
       body {
@@ -320,6 +301,7 @@
       
       .hero-section {
         padding: 30px 0 40px;
+        margin: 10px 0;
       }
       
       .navbar-brand {
@@ -331,62 +313,47 @@
         font-size: 0.9rem;
       }
       
-      .hero-section::before {
-        margin: 0 10px;
+      .search-bar {
+        padding: 0 15px;
       }
     }
     
-    .filter-container {
-      margin-bottom: 25px;
+    .container {
+      max-width: 1200px;
     }
     
-    .floating-shape {
-      position: fixed;
-      border-radius: 50%;
-      opacity: 0.1;
-      z-index: 0;
+    /* Clean background styling */
+    .main-content {
+      background: transparent;
+      padding: 20px 0;
     }
     
-    .shape-1 {
-      width: 300px;
-      height: 300px;
+    .quick-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 15px;
+    }
+    
+    .quick-filter {
+      padding: 8px 16px;
+      background: white;
+      border: 1px solid var(--medium-gray);
+      border-radius: 50px;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+    
+    .quick-filter:hover {
       background: var(--primary);
-      top: 10%;
-      left: 5%;
-      animation: float 15s ease-in-out infinite;
-    }
-    
-    .shape-2 {
-      width: 200px;
-      height: 200px;
-      background: var(--secondary);
-      bottom: 15%;
-      right: 5%;
-      animation: float 18s ease-in-out infinite;
-    }
-    
-    .shape-3 {
-      width: 150px;
-      height: 150px;
-      background: var(--accent);
-      top: 50%;
-      left: 80%;
-      animation: float 12s ease-in-out infinite;
-    }
-    
-    @keyframes float {
-      0% { transform: translate(0, 0) rotate(0deg); }
-      50% { transform: translate(20px, 20px) rotate(180deg); }
-      100% { transform: translate(0, 0) rotate(360deg); }
+      color: white;
+      border-color: var(--primary);
     }
   </style>
 </head>
 <body>
-  <!-- Floating background shapes -->
-  <div class="floating-shape shape-1"></div>
-  <div class="floating-shape shape-2"></div>
-  <div class="floating-shape shape-3"></div>
-
   <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-light bg-light px-3 py-2">
     <div class="container">
@@ -409,30 +376,29 @@
     </div>
   </nav>
 
-  <!-- Hero Section -->
-  <section class="hero-section">
-    <div class="container">
-      <h1 class="display-5 fw-bold mb-3">Find Your <span class="text-primary">Dream Job</span> Today</h1>
-      <p class="lead mb-4">Discover thousands of job opportunities from top companies around the world</p>
-      
-      <div class="search-bar">
-        <input type="text" class="form-control" id="searchInput" placeholder="Job title, keywords, or company">
-        <button class="btn btn-primary" id="searchButton"><i class="fas fa-search me-2"></i>Search</button>
-      </div>
-      
-      <div class="d-flex flex-wrap justify-content-center gap-2 mt-3">
-        <span class="badge bg-light text-dark p-2">Remote</span>
-        <span class="badge bg-light text-dark p-2">Full-Time</span>
-        <span class="badge bg-light text-dark p-2">Internship</span>
-        <span class="badge bg-light text-dark p-2">Part-Time</span>
-        <span class="badge bg-light text-dark p-2">Contract</span>
-      </div>
-    </div>
-  </section>
-
   <!-- Main Content -->
-  <div class="container mb-5 mt-4">
-    <div class="row">
+  <div class="container main-content">
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="container">
+        <h1 class="display-5 fw-bold mb-3">Find Your <span class="text-primary">Dream Job</span> Today</h1>
+        <p class="lead mb-4">Discover thousands of job opportunities from top companies around the world</p>
+        
+        <div class="search-bar">
+          <input type="text" class="form-control" id="searchInput" placeholder="Job title, keywords, or company">
+          <button class="btn btn-primary" id="searchButton"><i class="fas fa-search me-2"></i>Search</button>
+        </div>
+        
+        <div class="quick-filters">
+          <div class="quick-filter" data-filter="remote">Remote</div>
+          <div class="quick-filter" data-filter="fulltime">Full-Time</div>
+          <div class="quick-filter" data-filter="parttime">Part-Time</div>
+          <div class="quick-filter" data-filter="internship">Internship</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="row mt-4">
       <div class="col-12">
         <!-- Filter Toggle Button -->
         <button class="filter-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse" aria-expanded="false" aria-controls="filterCollapse">
@@ -477,7 +443,7 @@
                 <option value="Delhi">Delhi</option>
                 <option value="Hyderabad">Hyderabad</option>
                 <option value="Chennai">Chennai</option>
-                <option value="Puen">Pune</option>
+                <option value="Pune">Pune</option>
               </select>
             </div>
             
@@ -662,6 +628,7 @@
     const filterCollapse = document.getElementById('filterCollapse');
     const searchInput = document.getElementById('searchInput');
     const searchButton = document.getElementById('searchButton');
+    const quickFilters = document.querySelectorAll('.quick-filter');
     
     // Update toggle button text based on collapse state
     filterCollapse.addEventListener('show.bs.collapse', function () {
@@ -792,6 +759,24 @@
       visibleJobs += 6;
       renderJobs(filteredJobs);
     }
+    
+    // Add quick filter functionality
+    quickFilters.forEach(filter => {
+      filter.addEventListener('click', () => {
+        const filterType = filter.getAttribute('data-filter');
+        
+        // Reset all checkboxes first
+        document.querySelectorAll('input.filter-option[type="checkbox"]').forEach(checkbox => {
+          checkbox.checked = false;
+        });
+        
+        // Check the appropriate checkbox
+        document.getElementById(filterType).checked = true;
+        
+        // Apply filters
+        applyFilters();
+      });
+    });
     
     // Event listeners
     applyFiltersButton.addEventListener('click', applyFilters);
