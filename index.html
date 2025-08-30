@@ -1,511 +1,139 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>AuraJobs — Job Portal (Demo)</title>
-  <meta name="description" content="Single-file job portal demo — responsive, save jobs, simulated Google login (demo), internal JS/CSS + Bootstrap." />
-
-  <!-- Bootstrap CSS (CDN) -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Bootstrap Icons -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AuraJobs – Job Portal</title>
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    /* -----------------------
-       THEME & LAYOUT (mobile-first)
-       ----------------------- */
-    :root{
-      --bg-a:#f0f7ff; --bg-b:#fff7fb;
-      --accent-1:#7c3aed; --accent-2:#06b6d4; --accent-3:#2563eb;
-      --muted:#64748b; --card:#ffffff;
-      --radius:14px; --shadow: 0 10px 26px rgba(2,6,23,0.08);
-      --container:1100px;
-      font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #6a11cb, #2575fc, #00c6ff, #0072ff);
+      background-size: 300% 300%;
+      animation: gradientBG 10s ease infinite;
+      font-family: 'Segoe UI', sans-serif;
+      overflow-x: hidden;
     }
-
-    html,body{height:100%;margin:0;background:linear-gradient(135deg,var(--bg-a),var(--bg-b));color:#05263b;-webkit-font-smoothing:antialiased;}
-    a{color:inherit}
-    .frame{max-width:var(--container);margin:28px auto;padding:18px;position:relative;z-index:2}
-
-    /* topbar */
-    .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px;border-radius:12px;background:linear-gradient(90deg, rgba(255,255,255,0.6), rgba(255,255,255,0.45));box-shadow:var(--shadow);backdrop-filter:blur(6px)}
-    .brand{display:flex;gap:12px;align-items:center;cursor:pointer}
-    .logo{width:56px;height:56;border-radius:12px;background:linear-gradient(135deg,var(--accent-1),var(--accent-3));display:grid;place-items:center;color:#fff;font-weight:800;box-shadow:0 8px 22px rgba(79,70,229,0.18)}
-    .brand h1{margin:0;font-size:1.15rem}
-    .brand p{margin:0;font-size:.78rem;color:var(--muted)}
-
-    /* layout */
-    .main{display:grid;grid-template-columns:1fr;gap:16px;margin-top:16px}
-    .card{background:var(--card);border-radius:12px;padding:16px;box-shadow:var(--shadow)}
-
-    /* filters */
-    .chip{padding:8px 10px;border-radius:999px;border:1px solid #eef2ff;background:linear-gradient(180deg,#fff,#fbfdff);cursor:pointer;font-weight:700;color:var(--muted)}
-    .chip.active{background:linear-gradient(90deg,#ede9fe,#dbeafe);border-color:#c7b8ff;color:#05263b}
-
-    /* job card */
-    .job{display:flex;gap:12px;align-items:flex-start;padding:14px;border-radius:12px;border:1px solid rgba(2,6,23,0.04);transition:transform .15s,box-shadow .15s;background:linear-gradient(180deg,#fff,#fbfdff)}
-    .job:hover{transform:translateY(-6px);box-shadow:0 12px 28px rgba(2,6,23,0.06)}
-    .logoSm{width:64px;height:64;border-radius:12px;background:linear-gradient(135deg,#fff,#f3f4f6);display:grid;place-items:center;font-weight:800;color:#0f172a;font-size:1.1rem}
-    .meta{color:var(--muted);font-weight:700;font-size:.9rem}
-    .tag{display:inline-block;padding:4px 8px;border-radius:999px;background:#f1f5f9;font-weight:700;font-size:.8rem;margin-right:6px}
-
-    /* action buttons */
-    .save-btn{border-radius:10px;padding:8px 12px;border:2px dashed #eef2ff;background:transparent;cursor:pointer}
-    .save-btn.saved{background:linear-gradient(90deg,#f0fdf4,#dcfce7);border-style:solid;border-color:rgba(16,185,129,0.15)}
-    .applyBtn{min-width:92px}
-
-    /* animated background blobs + particles */
-    .bg-blob{position:fixed;width:48vmax;height:48vmax;border-radius:50%;filter:blur(50px);mix-blend-mode:overlay;opacity:.5;z-index:0}
-    .blobA{background:radial-gradient(circle at 30% 30%, var(--accent-1), #4f46e5);left:-10%;top:-22%}
-    .blobB{background:radial-gradient(circle at 70% 70%, var(--accent-2), #06b6d4);right:-14%;bottom:-24%;opacity:.36}
-    .particle{position:fixed;border-radius:50%;pointer-events:none;opacity:.12;mix-blend-mode:screen}
-
-    /* responsive: wide screens show two columns */
-    @media (min-width:900px){ .main{grid-template-columns:340px 1fr} }
-
-    /* small tweaks */
-    .muted{color:var(--muted)}
-    footer{margin-top:18px;color:var(--muted);text-align:center;font-size:.9rem}
-    .focus-ring:focus{outline:3px solid rgba(99,102,241,0.18);outline-offset:3px}
+    @keyframes gradientBG {
+      0% {background-position: 0% 50%;}
+      50% {background-position: 100% 50%;}
+      100% {background-position: 0% 50%;}
+    }
+    .navbar {
+      border-radius: 0 0 20px 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+    .job-card {
+      border-radius: 15px;
+      background: #fff;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      transition: transform 0.2s ease;
+    }
+    .job-card:hover {
+      transform: translateY(-4px);
+    }
+    .filter-box {
+      background: #fff;
+      padding: 15px;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    /* Hide scrollbar */
+    ::-webkit-scrollbar { display: none; }
+    body { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
 </head>
 <body>
-  <!-- bg -->
-  <div class="bg-blob blobA"></div>
-  <div class="bg-blob blobB"></div>
-
-  <div class="frame container">
-    <!-- topbar -->
-    <div class="topbar">
-      <div class="brand" onclick="goto('jobs')">
-        <div class="logo">AJ</div>
-        <div>
-          <h1>AuraJobs</h1>
-          <p class="muted">Clean • Responsive • Demo</p>
-        </div>
-      </div>
-
-      <div class="d-flex align-items-center gap-2" id="profileWrap">
-        <!-- injected: Login button or profile dropdown -->
-      </div>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-3">
+    <a class="navbar-brand fw-bold" href="#">AuraJobs</a>
+    <div class="ms-auto text-white text-end">
+      <small>📞 Customer Support / Add Jobs: <b>8087804339</b></small>
     </div>
+  </nav>
 
-    <!-- main -->
-    <main class="main" role="main">
-      <!-- filters -->
-      <aside class="card">
-        <div class="d-flex align-items-center justify-content-between mb-2">
-          <div class="fw-bold">Filters</div>
-          <button id="toggleFilters" class="btn btn-sm btn-outline-secondary">Toggle</button>
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label muted">Search</label>
-          <div class="d-flex gap-2">
-            <input id="q" class="form-control" type="search" placeholder="Role, company or tag">
-            <button id="btnSearch" class="btn btn-primary">Search</button>
+  <!-- Filters -->
+  <div class="container mt-4">
+    <div class="row">
+      <div class="col-md-3 mb-3">
+        <div class="filter-box">
+          <h6 class="fw-bold mb-3">Filters</h6>
+          <div class="mb-3">
+            <label class="form-label">Job Type</label>
+            <select class="form-select">
+              <option>All</option>
+              <option>Full-Time</option>
+              <option>Part-Time</option>
+              <option>Remote</option>
+              <option>Internship</option>
+            </select>
           </div>
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label muted">Job Type</label>
-          <div id="filterType" class="d-flex flex-wrap gap-2"></div>
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label muted">Mode</label>
-          <div id="filterMode" class="d-flex flex-wrap gap-2"></div>
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label muted">Max Salary (k)</label>
-          <div class="d-flex align-items-center gap-2">
-            <input id="salaryRange" type="range" min="10" max="250" value="120" class="form-range">
-            <div id="salaryLabel" class="muted">Up to ₹120k</div>
+          <div class="mb-3">
+            <label class="form-label">Location</label>
+            <input type="text" class="form-control" placeholder="Enter city">
           </div>
-        </div>
-
-        <div class="d-flex gap-2">
-          <button id="btnClear" class="btn btn-outline-secondary">Clear</button>
-          <button id="btnReset" class="btn btn-outline-danger">Reset</button>
-        </div>
-      </aside>
-
-      <!-- jobs -->
-      <section class="card">
-        <div class="d-flex align-items-center justify-content-between mb-3">
-          <div>
-            <h5 class="mb-0">Available Jobs</h5>
-            <div id="resultsInfo" class="muted small mt-1">0 results</div>
+          <div class="mb-3">
+            <label class="form-label">Salary Range</label>
+            <select class="form-select">
+              <option>Any</option>
+              <option>₹10k – ₹25k</option>
+              <option>₹25k – ₹50k</option>
+              <option>₹50k – ₹1L</option>
+              <option>₹1L+</option>
+            </select>
           </div>
-
-          <div class="d-flex gap-2 align-items-center">
-            <ul class="pagination pagination-sm mb-0" id="paginationWrap"></ul>
-            <div class="d-none d-md-flex">
-              <button id="refreshBtn" class="btn btn-sm btn-outline-secondary"><i class="bi bi-arrow-clockwise"></i></button>
-            </div>
-          </div>
-        </div>
-
-        <div id="jobList" class="d-grid gap-3" aria-live="polite"></div>
-
-        <div class="mt-3 d-flex justify-content-between align-items-center">
-          <div class="muted">Tip: this demo app stores data in your browser (localStorage).</div>
-          <div class="d-flex gap-2">
-            <button id="btnPrev" class="btn btn-outline-secondary btn-sm">Prev</button>
-            <button id="btnNext" class="btn btn-primary btn-sm">Next</button>
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <footer>Built with ❤️ — Demo — All code internal (no backend)</footer>
-  </div>
-
-  <!-- Login modal (email / google demo) -->
-  <div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-sm modal-dialog-centered">
-      <div class="modal-content rounded-4">
-        <div class="modal-header">
-          <h5 class="modal-title">Sign in</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="close"></button>
-        </div>
-        <div class="modal-body">
-          <div class="mb-2 text-center">
-            <button id="googleBtn" class="btn btn-outline-danger w-100 mb-2"><i class="bi bi-google"></i> Sign in with Google (demo)</button>
-            <div class="text-muted small">— or —</div>
-          </div>
-          <form id="emailLoginForm">
-            <div class="mb-2">
-              <label class="form-label small muted">Email</label>
-              <input id="emailInput" type="email" class="form-control" placeholder="you@gmail.com" required>
-            </div>
-            <div class="mb-2">
-              <label class="form-label small muted">Display name</label>
-              <input id="nameInput" type="text" class="form-control" placeholder="Jane Doe">
-            </div>
-            <div class="d-flex justify-content-end gap-2">
-              <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-              <button type="submit" class="btn btn-primary">Sign in</button>
-            </div>
-          </form>
-          <div class="mt-2 small muted">Note: Google sign-in is simulated in this demo. Use a Gmail address to simulate Google login.</div>
+          <button class="btn btn-primary w-100">Apply Filters</button>
         </div>
       </div>
-    </div>
-  </div>
 
-  <!-- Apply confirmation modal -->
-  <div class="modal fade" id="applyModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-sm modal-dialog-centered">
-      <div class="modal-content rounded-4">
-        <div class="modal-body text-center p-4">
-          <div id="applyMsg" class="mb-3">Apply?</div>
-          <div class="d-flex justify-content-center gap-2">
-            <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button id="confirmApply" class="btn btn-primary">Confirm</button>
+      <!-- Job Listings -->
+      <div class="col-md-9">
+        <div class="row g-4">
+          <div class="col-md-6">
+            <div class="job-card">
+              <h5 class="fw-bold">Frontend Developer</h5>
+              <p class="text-muted mb-1">🏢 Company: TechNova Solutions</p>
+              <p class="text-muted">Remote • ₹40k – ₹60k</p>
+              <p>Build user-friendly interfaces using React, Bootstrap, and modern UI frameworks.</p>
+              <a href="https://wa.me/918087804339?text=Hi%20I%20am%20interested%20in%20the%20Frontend%20Developer%20job%20at%20TechNova%20Solutions" target="_blank" class="btn btn-sm btn-success">Apply Now</a>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="job-card">
+              <h5 class="fw-bold">Data Analyst</h5>
+              <p class="text-muted mb-1">🏢 Company: Insight Analytics</p>
+              <p class="text-muted">Mumbai • ₹35k – ₹55k</p>
+              <p>Work with large datasets, perform analysis, and create reports for business insights.</p>
+              <a href="https://wa.me/918087804339?text=Hi%20I%20am%20interested%20in%20the%20Data%20Analyst%20job%20at%20Insight%20Analytics" target="_blank" class="btn btn-sm btn-success">Apply Now</a>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="job-card">
+              <h5 class="fw-bold">UI/UX Designer</h5>
+              <p class="text-muted mb-1">🏢 Company: Creative Minds Studio</p>
+              <p class="text-muted">Bangalore • ₹45k – ₹70k</p>
+              <p>Design wireframes, prototypes, and improve overall product experience.</p>
+              <a href="https://wa.me/918087804339?text=Hi%20I%20am%20interested%20in%20the%20UI%2FUX%20Designer%20job%20at%20Creative%20Minds%20Studio" target="_blank" class="btn btn-sm btn-success">Apply Now</a>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="job-card">
+              <h5 class="fw-bold">Digital Marketing Manager</h5>
+              <p class="text-muted mb-1">🏢 Company: GrowthHackers Media</p>
+              <p class="text-muted">Delhi • ₹50k – ₹80k</p>
+              <p>Manage SEO, SEM, social media campaigns, and brand growth strategies.</p>
+              <a href="https://wa.me/918087804339?text=Hi%20I%20am%20interested%20in%20the%20Digital%20Marketing%20Manager%20job%20at%20GrowthHackers%20Media" target="_blank" class="btn btn-sm btn-success">Apply Now</a>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-
-  <!-- toast area -->
-  <div id="toastWrap" style="position:fixed;right:18px;bottom:18px;z-index:9999"></div>
 
   <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
-
-  <script>
-  // ------------- App State -------------
-  const state = {
-    jobs: [],
-    saved: new Set(JSON.parse(localStorage.getItem('aj_demo_saved')||'[]')),
-    apps: JSON.parse(localStorage.getItem('aj_demo_apps')||'[]'),
-    user: JSON.parse(localStorage.getItem('aj_demo_user')||'null'),
-    filters: { type: new Set(), mode: new Set(), maxSalary: 120 },
-    q: '', page: 1, perPage: 5
-  };
-
-  const SEED = [
-    {id:1,title:'Frontend Developer',company:'Aurora Soft',location:'Bengaluru, IN',type:'Full-time',mode:'Hybrid',experience:'1-3',salary:120,tags:['React','TypeScript','UI'],desc:'Build modern interfaces & reusable components.'},
-    {id:2,title:'Backend Engineer',company:'Nimbus Labs',location:'Remote',type:'Full-time',mode:'Remote',experience:'3-5',salary:180,tags:['Node','Databases','APIs'],desc:'Design scalable services and APIs.'},
-    {id:3,title:'Product Manager',company:'Orbit Co',location:'Mumbai, IN',type:'Full-time',mode:'On-site',experience:'5+',salary:220,tags:['Roadmap','Stakeholder'],desc:'Lead product strategy & delivery.'},
-    {id:4,title:'UI/UX Designer',company:'PixelCraft',location:'Pune, IN',type:'Part-time',mode:'Remote',experience:'1-3',salary:70,tags:['Figma','Prototyping'],desc:'Design delightful experiences.'},
-    {id:5,title:'Data Analyst',company:'DataMinds',location:'Hyderabad, IN',type:'Contract',mode:'Hybrid',experience:'1-3',salary:95,tags:['SQL','Python'],desc:'Extract insights and build dashboards.'},
-    {id:6,title:'Sales Executive',company:'SellWell',location:'Delhi, IN',type:'Full-time',mode:'On-site',experience:'0-1',salary:45,tags:['Sales','CRM'],desc:'Drive new client acquisitions.'},
-    {id:7,title:'DevOps Engineer',company:'CloudPulse',location:'Remote',type:'Full-time',mode:'Remote',experience:'3-5',salary:160,tags:['AWS','Kubernetes'],desc:'Improve CI/CD and infra.'},
-    {id:8,title:'Customer Success',company:'HappyUsers',location:'Chennai, IN',type:'Full-time',mode:'Hybrid',experience:'0-1',salary:40,tags:['Support','SaaS'],desc:'Help customers achieve success.'}
-  ];
-
-  // ------------- Helpers -------------
-  const $ = (s,el=document)=>el.querySelector(s);
-  const $$ = (s,el=document)=>[...el.querySelectorAll(s)];
-  const uid = ()=>Math.random().toString(36).slice(2,9);
-  function persist(){ localStorage.setItem('aj_demo_saved', JSON.stringify([...state.saved])); localStorage.setItem('aj_demo_apps', JSON.stringify(state.apps)); localStorage.setItem('aj_demo_user', JSON.stringify(state.user)); }
-
-  // ------------- Init -------------
-  function init(){
-    state.jobs = JSON.parse(localStorage.getItem('aj_demo_jobs') || 'null') || SEED.map(j=>({...j, created: Date.now() - Math.floor(Math.random()*10)*86400000}));
-    localStorage.setItem('aj_demo_jobs', JSON.stringify(state.jobs));
-
-    // render filter chips
-    renderChips('#filterType', [...new Set(state.jobs.map(j=>j.type))], state.filters.type);
-    renderChips('#filterMode', [...new Set(state.jobs.map(j=>j.mode))], state.filters.mode);
-
-    // events
-    $('#q').addEventListener('input', e=>{ state.q = e.target.value.trim(); state.page=1; render(); });
-    $('#btnSearch').addEventListener('click', ()=>{ state.q = $('#q').value.trim(); state.page=1; render(); });
-    $('#salaryRange').addEventListener('input', e=>{ state.filters.maxSalary = +e.target.value; $('#salaryLabel').textContent = `Up to ₹${state.filters.maxSalary}k`; state.page=1; render(); });
-    $('#btnClear').addEventListener('click', clearFilters);
-    $('#btnReset').addEventListener('click', ()=>{ if(confirm('Reset demo data?')){ localStorage.clear(); location.reload(); }});
-    $('#btnPrev').addEventListener('click', ()=>{ if(state.page>1){ state.page--; render(); } });
-    $('#btnNext').addEventListener('click', ()=>{ state.page++; render(); });
-    $('#refreshBtn').addEventListener('click', ()=>{ render(); toast('Refreshed'); });
-
-    // nav (small screens use topbar buttons if present)
-    $$('[data-route]').forEach(b=> b.addEventListener('click', ()=> goto(b.getAttribute('data-route')) ));
-
-    // login flows
-    renderProfile();
-    // show login modal for demo sign in
-    $('#googleBtn').addEventListener('click', demoGoogleSignIn);
-    $('#emailLoginForm').addEventListener('submit', emailSignIn);
-
-    // toggle filters
-    $('#toggleFilters').addEventListener('click', ()=> {
-      const aside = document.querySelector('aside.card');
-      aside.style.display = aside.style.display === 'none' ? '' : 'none';
-    });
-
-    // background particles
-    createParticles(18);
-
-    // initial render
-    goto('jobs');
-  }
-
-  // ------------- UI helpers -------------
-  function renderChips(selector, items, selectedSet){
-    const el = $(selector); el.innerHTML = '';
-    items.forEach(it=>{
-      const btn = document.createElement('button');
-      btn.type='button';
-      btn.className='chip';
-      btn.textContent = it;
-      btn.addEventListener('click', ()=>{ if(selectedSet.has(it)) selectedSet.delete(it); else selectedSet.add(it); btn.classList.toggle('active'); state.page=1; render(); });
-      el.appendChild(btn);
-    });
-  }
-
-  function clearFilters(){
-    state.filters.type.clear(); state.filters.mode.clear(); state.filters.maxSalary = 120;
-    $('#salaryRange').value=120; $('#salaryLabel').textContent='Up to ₹120k'; $('#q').value=''; state.q=''; state.page=1;
-    $$('#filterType .chip').forEach(c=>c.classList.remove('active')); $$('#filterMode .chip').forEach(c=>c.classList.remove('active'));
-    toast('Filters cleared'); render();
-  }
-
-  function applyFilters(list){
-    let out = list.filter(j=> j.salary <= state.filters.maxSalary );
-    if(state.q){ const q = state.q.toLowerCase(); out = out.filter(j=> (j.title+' '+j.company+' '+j.tags.join(' ')).toLowerCase().includes(q)); }
-    if(state.filters.type.size) out = out.filter(j=> state.filters.type.has(j.type));
-    if(state.filters.mode.size) out = out.filter(j=> state.filters.mode.has(j.mode));
-    out.sort((a,b)=> b.created - a.created);
-    return out;
-  }
-
-  function render(){
-    const all = applyFilters(state.jobs);
-    const total = all.length; const pages = Math.max(1, Math.ceil(total/state.perPage));
-    if(state.page>pages) state.page = pages;
-    const start = (state.page-1)*state.perPage; const items = all.slice(start, start+state.perPage);
-
-    $('#resultsInfo').textContent = `${total} result${total!==1?'s':''}`;
-    const wrap = $('#jobList'); wrap.innerHTML = '';
-    items.forEach(j => wrap.append(createJobCard(j)));
-
-    renderPagination(state.page, pages);
-    $('#btnPrev').disabled = state.page <= 1;
-    $('#btnNext').disabled = state.page >= pages;
-  }
-
-  function createJobCard(j){
-    const el = document.createElement('div'); el.className='job';
-    el.innerHTML = `
-      <div class="logoSm" aria-hidden="true">${escapeHTML(j.company.split(' ')[0][0]||'A')}</div>
-      <div style="flex:1">
-        <div class="d-flex align-items-start justify-content-between">
-          <div>
-            <h5 class="mb-1">${escapeHTML(j.title)}</h5>
-            <div class="meta">${escapeHTML(j.company)} • ${escapeHTML(j.location)} • ${escapeHTML(j.experience)} yrs</div>
-          </div>
-          <div class="text-end" style="font-weight:800;color:#05263b">₹${j.salary}k</div>
-        </div>
-        <div class="jobDesc muted small mt-2">${escapeHTML(j.desc)}</div>
-        <div class="mt-2">${j.tags.map(t=>`<span class="tag">${escapeHTML(t)}</span>`).join('')}</div>
-      </div>
-      <div class="d-flex flex-column align-items-end gap-2">
-        <button class="save-btn ${state.saved.has(j.id)?'saved':''}" data-id="${j.id}" title="Save job">
-          <i class="${state.saved.has(j.id)?'bi bi-bookmark-fill':'bi bi-bookmark'}"></i>
-          <span class="ms-1">${state.saved.has(j.id)?'Saved':'Save'}</span>
-        </button>
-        <button class="btn btn-primary applyBtn" data-apply="${j.id}">Apply</button>
-      </div>
-    `;
-    el.querySelector('.save-btn').addEventListener('click', (e)=> toggleSave(j.id, e.currentTarget));
-    el.querySelector('.applyBtn').addEventListener('click', ()=> openApplyModal(j));
-    return el;
-  }
-
-  function toggleSave(id, btnEl){
-    if(state.saved.has(id)){ state.saved.delete(id); btnEl.classList.remove('saved'); btnEl.innerHTML = `<i class="bi bi-bookmark"></i><span class="ms-1">Save</span>`; toast('Removed'); }
-    else { state.saved.add(id); btnEl.classList.add('saved'); btnEl.innerHTML = `<i class="bi bi-bookmark-fill"></i><span class="ms-1">Saved</span>`; toast('Saved'); }
-    persist();
-  }
-
-  function openApplyModal(job){
-    if(!state.user){ toast('Please sign in to apply'); openLogin(); return; }
-    $('#applyMsg').textContent = `Apply for "${job.title}" at ${job.company}?`;
-    const m = new bootstrap.Modal($('#applyModal'));
-    $('#confirmApply').onclick = ()=>{ confirmApply(job); m.hide(); };
-    m.show();
-  }
-
-  function confirmApply(job){
-    state.apps.unshift({ id: uid(), jobId:job.id, title:job.title, company:job.company, when:Date.now(), applicant:state.user.email });
-    persist();
-    toast('Application submitted');
-    goto('applications');
-  }
-
-  // ------------- Login flows (demo) -------------
-  function demoGoogleSignIn(){
-    // Demo: open small prompt asking for Gmail to simulate Google sign-in
-    const email = prompt('Enter your Google (Gmail) address to simulate Sign in with Google:');
-    if(!email) return;
-    if(!validateEmail(email) || !email.toLowerCase().endsWith('@gmail.com')){ alert('This demo accepts Gmail addresses (example@gmail.com).'); return; }
-    const name = email.split('@')[0];
-    state.user = { email, name, provider: 'google' };
-    persist();
-    renderProfile();
-    toast(`Signed in as ${name} (Google demo)`);
-    bootstrap.Modal.getInstance($('#loginModal'))?.hide();
-  }
-
-  function emailSignIn(e){
-    e.preventDefault();
-    const email = $('#emailInput').value.trim();
-    const name = $('#nameInput').value.trim() || email.split('@')[0];
-    if(!validateEmail(email)){ alert('Enter a valid email'); return; }
-    state.user = { email, name, provider: 'email' };
-    persist();
-    renderProfile();
-    toast(`Welcome, ${name}`);
-    bootstrap.Modal.getInstance($('#loginModal'))?.hide();
-  }
-
-  function renderProfile(){
-    const wrap = $('#profileWrap'); wrap.innerHTML = '';
-    if(state.user){
-      const dd = document.createElement('div'); dd.className='dropdown';
-      dd.innerHTML = `
-        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">${escapeHTML(state.user.name)}</button>
-        <ul class="dropdown-menu dropdown-menu-end">
-          <li class="dropdown-item-text"><strong>${escapeHTML(state.user.name)}</strong><div class="small muted">${escapeHTML(state.user.email)}</div></li>
-          <li><hr class="dropdown-divider"></li>
-          <li><button class="dropdown-item" id="menuSaved">Saved Jobs</button></li>
-          <li><button class="dropdown-item" id="menuApps">Applications</button></li>
-          <li><button class="dropdown-item text-danger" id="menuLogout">Logout</button></li>
-        </ul>`;
-      wrap.appendChild(dd);
-      setTimeout(()=>{ $('#menuSaved').addEventListener('click', ()=> goto('saved')); $('#menuApps').addEventListener('click', ()=> goto('applications')); $('#menuLogout').addEventListener('click', logout); }, 10);
-    } else {
-      const btnGroup = document.createElement('div'); btnGroup.className='d-flex gap-2';
-      const googleBtn = document.createElement('button'); googleBtn.className='btn btn-outline-danger btn-sm'; googleBtn.innerHTML = '<i class="bi bi-google"></i> Google';
-      googleBtn.addEventListener('click', ()=> { $('#loginModal').querySelector('#googleBtn').click(); $('#loginModal').querySelector('#googleBtn').focus(); $('#loginModal').classList.add('show'); openLogin(); });
-      const loginBtn = document.createElement('button'); loginBtn.className='btn btn-primary btn-sm'; loginBtn.textContent='Sign in';
-      loginBtn.addEventListener('click', openLogin);
-      btnGroup.appendChild(googleBtn); btnGroup.appendChild(loginBtn);
-      wrap.appendChild(btnGroup);
-    }
-  }
-
-  function logout(){ if(!confirm('Logout?')) return; state.user=null; persist(); renderProfile(); toast('Logged out'); goto('jobs'); }
-
-  // ------------- Routing & small pages -------------
-  function goto(route){
-    // remove active from small nav (none by default)
-    if(route==='jobs'){ render(); }
-    else if(route==='saved'){ showSaved(); }
-    else if(route==='applications'){ renderApps(); }
-  }
-
-  function showSaved(){
-    const ids = [...state.saved];
-    const items = state.jobs.filter(j=> ids.includes(j.id));
-    $('#resultsInfo').textContent = `${items.length} saved`;
-    const wrap = $('#jobList'); wrap.innerHTML = '';
-    if(!items.length){ wrap.innerHTML = '<div class="muted">No saved jobs</div>'; return; }
-    items.forEach(j=> wrap.append(createJobCard(j)));
-  }
-
-  function renderApps(){
-    const ulId = 'applicationsList';
-    let ul = $('#'+ulId);
-    if(!ul){
-      ul = document.createElement('ul'); ul.id = ulId; ul.className = 'list-unstyled mt-3';
-      $('#jobList').parentElement.appendChild(ul);
-    }
-    ul.innerHTML = '';
-    if(!state.apps.length){ ul.innerHTML = '<li class="muted">No applications yet</li>'; return; }
-    state.apps.forEach(a=>{
-      const li = document.createElement('li'); li.className='card p-2 mb-2';
-      li.innerHTML = `<div class="d-flex justify-content-between align-items-center"><div><strong>${escapeHTML(a.title)}</strong><div class="muted small">${escapeHTML(a.company)}</div></div><div class="muted small">${new Date(a.when).toLocaleString()}</div></div>`;
-      ul.appendChild(li);
-    });
-  }
-
-  // ------------- Pagination -------------
-  function renderPagination(page,pages){
-    const wrap = $('#paginationWrap'); wrap.innerHTML = '';
-    for(let i=1;i<=pages;i++){
-      const li = document.createElement('li'); li.className='page-item ' + (i===page?'active':'');
-      const a = document.createElement('a'); a.className='page-link'; a.href='#'; a.textContent = i;
-      a.addEventListener('click', ev=>{ ev.preventDefault(); state.page = i; render(); });
-      li.appendChild(a); wrap.appendChild(li);
-    }
-  }
-
-  // ------------- Particles -------------
-  function createParticles(n){
-    for(let i=0;i<n;i++){
-      const el = document.createElement('div'); el.className='particle';
-      const size = 6 + Math.random()*36; el.style.width = el.style.height = size+'px';
-      el.style.left = Math.random()*100 + '%'; el.style.top = Math.random()*100 + '%';
-      el.style.background = `radial-gradient(circle at 30% 30%, rgba(255,255,255,0.6), rgba(255,255,255,0.2))`;
-      el.style.opacity = 0.04 + Math.random()*0.14;
-      document.body.appendChild(el);
-      animateParticle(el);
-    }
-  }
-  function animateParticle(el){
-    const dur = 8000 + Math.random()*12000; const dx = (Math.random()-0.5)*40;
-    el.animate([{transform:'translateY(0px) translateX(0px)', opacity: el.style.opacity},{transform:`translateY(-60vh) translateX(${dx}vw)`, opacity:0}],{duration:dur,iterations:Infinity,delay:Math.random()*2000});
-  }
-
-  // ------------- Utils & small UX -------------
-  function validateEmail(e){ return /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(e); }
-  function escapeHTML(s){ return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
-  function toast(msg){
-    const t = document.createElement('div'); t.className='toast align-items-center text-white bg-dark border-0 mb-2'; t.style.minWidth='160px';
-    t.innerHTML = `<div class="d-flex"><div class="toast-body">${escapeHTML(msg)}</div></div>`;
-    $('#toastWrap').appendChild(t);
-    setTimeout(()=>{ t.style.transition='opacity 400ms'; t.style.opacity=0; setTimeout(()=> t.remove(),420); },1400);
-  }
-
-  // ------------- Init call -------------
-  persist(); init();
-  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
