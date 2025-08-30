@@ -20,17 +20,32 @@
     body {
       margin: 0;
       min-height: 100vh;
-      background: linear-gradient(135deg, #f5f7fa, #e4e8f0);
+      background: linear-gradient(120deg, #a1c4fd, #c2e9fb, #fbc2eb, #a6c1ee);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       overflow-x: hidden;
       color: #333;
+      padding-top: 80px; /* Account for fixed navbar */
+    }
+    
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
     
     .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1030;
       border-radius: 0 0 15px 15px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      background: white !important;
-      padding: 12px 0;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      background: rgba(255, 255, 255, 0.95) !important;
+      backdrop-filter: blur(10px);
+      padding: 10px 0;
     }
     
     .navbar-brand {
@@ -40,11 +55,24 @@
     }
     
     .hero-section {
-      padding: 80px 0 50px;
+      padding: 40px 0 50px;
       color: var(--dark);
       text-align: center;
-      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect fill="%233498db" fill-opacity="0.1" width="100" height="100"/><path fill="%233498db" fill-opacity="0.15" d="M30,30L70,30L70,70L30,70Z" /></svg>');
-      background-size: cover;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .hero-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255, 255, 255, 0.7);
+      border-radius: 20px;
+      z-index: -1;
+      margin: 0 20px;
     }
     
     .search-bar {
@@ -57,7 +85,7 @@
       border-radius: 50px;
       padding: 15px 25px;
       border: 2px solid var(--primary);
-      box-shadow: 0 5px 15px rgba(52, 152, 219, 0.2);
+      box-shadow: 0 5px 20px rgba(52, 152, 219, 0.25);
     }
     
     .search-bar button {
@@ -74,13 +102,14 @@
     .search-bar button:hover {
       background: #2980b9;
       transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
     }
     
     .job-card {
       border-radius: 12px;
       background: #fff;
       padding: 25px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
       transition: all 0.3s ease;
       height: 100%;
       border-top: 5px solid var(--primary);
@@ -88,14 +117,14 @@
     }
     
     .job-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 12px 20px rgba(0,0,0,0.15);
+      transform: translateY(-7px);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.15);
     }
     
     .company-logo {
       width: 60px;
       height: 60px;
-      border-radius: 10px;
+      border-radius: 12px;
       background: var(--light);
       display: flex;
       align-items: center;
@@ -103,7 +132,7 @@
       font-weight: bold;
       color: var(--primary);
       margin-bottom: 15px;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
       font-size: 1.2rem;
     }
     
@@ -142,6 +171,7 @@
       width: 100%;
       text-align: left;
       position: relative;
+      box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
     }
     
     .filter-toggle:after {
@@ -162,7 +192,7 @@
       background: #fff;
       padding: 20px;
       border-radius: 12px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
       margin-bottom: 25px;
     }
     
@@ -202,12 +232,13 @@
       transition: all 0.3s;
       width: 100%;
       margin-top: 10px;
+      box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
     }
     
     .apply-btn:hover {
       background: #2980b9;
       transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+      box-shadow: 0 6px 15px rgba(52, 152, 219, 0.4);
     }
     
     .reset-btn {
@@ -220,12 +251,13 @@
       width: 100%;
       margin-top: 10px;
       color: white;
+      box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);
     }
     
     .reset-btn:hover {
       background: #c0392b;
       transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+      box-shadow: 0 6px 15px rgba(231, 76, 60, 0.4);
     }
     
     .view-more {
@@ -241,13 +273,14 @@
       border-radius: 50px;
       font-weight: 600;
       transition: all 0.3s;
+      box-shadow: 0 4px 10px rgba(52, 152, 219, 0.2);
     }
     
     .view-more-btn:hover {
       background: var(--primary);
       color: white;
       transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+      box-shadow: 0 6px 15px rgba(52, 152, 219, 0.3);
     }
     
     .support-badge {
@@ -257,6 +290,7 @@
       border-radius: 50px;
       font-weight: 600;
       font-size: 0.9rem;
+      box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
     }
     
     .job-meta {
@@ -280,8 +314,12 @@
     
     /* Responsive adjustments */
     @media (max-width: 768px) {
+      body {
+        padding-top: 70px;
+      }
+      
       .hero-section {
-        padding: 60px 0 30px;
+        padding: 30px 0 40px;
       }
       
       .navbar-brand {
@@ -292,14 +330,63 @@
         padding: 10px 15px;
         font-size: 0.9rem;
       }
+      
+      .hero-section::before {
+        margin: 0 10px;
+      }
     }
     
     .filter-container {
       margin-bottom: 25px;
     }
+    
+    .floating-shape {
+      position: fixed;
+      border-radius: 50%;
+      opacity: 0.1;
+      z-index: 0;
+    }
+    
+    .shape-1 {
+      width: 300px;
+      height: 300px;
+      background: var(--primary);
+      top: 10%;
+      left: 5%;
+      animation: float 15s ease-in-out infinite;
+    }
+    
+    .shape-2 {
+      width: 200px;
+      height: 200px;
+      background: var(--secondary);
+      bottom: 15%;
+      right: 5%;
+      animation: float 18s ease-in-out infinite;
+    }
+    
+    .shape-3 {
+      width: 150px;
+      height: 150px;
+      background: var(--accent);
+      top: 50%;
+      left: 80%;
+      animation: float 12s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+      0% { transform: translate(0, 0) rotate(0deg); }
+      50% { transform: translate(20px, 20px) rotate(180deg); }
+      100% { transform: translate(0, 0) rotate(360deg); }
+    }
   </style>
 </head>
 <body>
+  <!-- Floating background shapes -->
+  <div class="floating-shape shape-1"></div>
+  <div class="floating-shape shape-2"></div>
+  <div class="floating-shape shape-3"></div>
+
   <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-light bg-light px-3 py-2">
     <div class="container">
@@ -313,19 +400,7 @@
       
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto me-4">
-          <!--
-          <li class="nav-item">
-            <a class="nav-link active" href="#">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Jobs</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Companies</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Blog</a>
-          </li>-->
+          <!-- Navigation links can be added here if needed -->
         </ul>
         <div class="d-flex align-items-center">
           <span class="support-badge"><i class="fas fa-phone-alt me-1"></i> Support: 8087804339</span>
@@ -402,7 +477,7 @@
                 <option value="Delhi">Delhi</option>
                 <option value="Hyderabad">Hyderabad</option>
                 <option value="Chennai">Chennai</option>
-                <option value="Pune">Pune</option>
+                <option value="Puen">Pune</option>
               </select>
             </div>
             
