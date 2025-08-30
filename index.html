@@ -3,131 +3,440 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AuraJobs – Job Portal</title>
+  <title>Jobify – Find Your Dream Job</title>
   <!-- Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <style>
+    :root {
+      --primary: #3498db;
+      --secondary: #2ecc71;
+      --accent: #f39c12;
+      --light: #f8f9fa;
+      --dark: #2c3e50;
+    }
+    
     body {
       margin: 0;
       min-height: 100vh;
-      background: linear-gradient(135deg, #6a11cb, #2575fc, #00c6ff, #0072ff);
-      background-size: 300% 300%;
-      animation: gradientBG 10s ease infinite;
-      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #f5f7fa, #e4e8f0);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       overflow-x: hidden;
+      color: #333;
     }
-    @keyframes gradientBG {
-      0% {background-position: 0% 50%;}
-      50% {background-position: 100% 50%;}
-      100% {background-position: 0% 50%;}
-    }
+    
     .navbar {
-      border-radius: 0 0 20px 20px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-    }
-    .job-card {
-      border-radius: 15px;
-      background: #fff;
-      padding: 20px;
+      border-radius: 0 0 15px 15px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      transition: transform 0.2s ease;
+      background: white !important;
+      padding: 12px 0;
     }
+    
+    .navbar-brand {
+      font-weight: 800;
+      color: var(--primary) !important;
+      font-size: 1.8rem;
+    }
+    
+    .hero-section {
+      padding: 80px 0 50px;
+      color: var(--dark);
+      text-align: center;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect fill="%233498db" fill-opacity="0.1" width="100" height="100"/><path fill="%233498db" fill-opacity="0.15" d="M30,30L70,30L70,70L30,70Z" /></svg>');
+      background-size: cover;
+    }
+    
+    .search-bar {
+      max-width: 700px;
+      margin: 0 auto 30px;
+      position: relative;
+    }
+    
+    .search-bar input {
+      border-radius: 50px;
+      padding: 15px 25px;
+      border: 2px solid var(--primary);
+      box-shadow: 0 5px 15px rgba(52, 152, 219, 0.2);
+    }
+    
+    .search-bar button {
+      position: absolute;
+      right: 5px;
+      top: 5px;
+      border-radius: 50px;
+      padding: 10px 25px;
+      background: var(--primary);
+      border: none;
+      transition: all 0.3s;
+    }
+    
+    .search-bar button:hover {
+      background: #2980b9;
+      transform: translateY(-2px);
+    }
+    
+    .job-card {
+      border-radius: 12px;
+      background: #fff;
+      padding: 25px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+      transition: all 0.3s ease;
+      height: 100%;
+      border-top: 5px solid var(--primary);
+      margin-bottom: 20px;
+    }
+    
     .job-card:hover {
-      transform: translateY(-4px);
+      transform: translateY(-5px);
+      box-shadow: 0 12px 20px rgba(0,0,0,0.15);
     }
+    
+    .company-logo {
+      width: 60px;
+      height: 60px;
+      border-radius: 10px;
+      background: var(--light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: var(--primary);
+      margin-bottom: 15px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+      font-size: 1.2rem;
+    }
+    
+    .job-tag {
+      display: inline-block;
+      padding: 5px 12px;
+      border-radius: 50px;
+      font-size: 0.8rem;
+      margin-right: 8px;
+      margin-bottom: 8px;
+      background: rgba(52, 152, 219, 0.1);
+      color: var(--primary);
+      font-weight: 500;
+    }
+    
+    .job-type-tag {
+      display: inline-block;
+      padding: 5px 12px;
+      border-radius: 50px;
+      font-size: 0.8rem;
+      margin-right: 8px;
+      margin-bottom: 8px;
+      background: rgba(46, 204, 113, 0.1);
+      color: #27ae60;
+      font-weight: 500;
+    }
+    
+    .filter-toggle {
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 20px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      width: 100%;
+      text-align: left;
+      position: relative;
+    }
+    
+    .filter-toggle:after {
+      content: '\f0b0';
+      font-family: 'Font Awesome 5 Free';
+      font-weight: 900;
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    
+    .filter-toggle.collapsed:after {
+      content: '\f0b0';
+    }
+    
     .filter-box {
       background: #fff;
-      padding: 15px;
-      border-radius: 15px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+      margin-bottom: 25px;
     }
+    
+    .filter-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #eee;
+    }
+    
+    .filter-section {
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .filter-title {
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: var(--dark);
+      font-size: 1.1rem;
+    }
+    
+    .form-check-label {
+      cursor: pointer;
+      color: #555;
+    }
+    
+    .apply-btn {
+      background: var(--primary);
+      border: none;
+      border-radius: 8px;
+      padding: 12px 25px;
+      font-weight: 600;
+      transition: all 0.3s;
+      width: 100%;
+      margin-top: 10px;
+    }
+    
+    .apply-btn:hover {
+      background: #2980b9;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+    }
+    
+    .reset-btn {
+      background: #e74c3c;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 25px;
+      font-weight: 600;
+      transition: all 0.3s;
+      width: 100%;
+      margin-top: 10px;
+      color: white;
+    }
+    
+    .reset-btn:hover {
+      background: #c0392b;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+    }
+    
+    .view-more {
+      text-align: center;
+      margin: 40px 0;
+    }
+    
+    .view-more-btn {
+      background: white;
+      color: var(--primary);
+      border: 2px solid var(--primary);
+      padding: 10px 30px;
+      border-radius: 50px;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+    
+    .view-more-btn:hover {
+      background: var(--primary);
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+    }
+    
+    .support-badge {
+      background: var(--primary);
+      color: white;
+      padding: 8px 15px;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    
+    .job-meta {
+      color: #7f8c8d;
+      font-size: 0.9rem;
+      margin-bottom: 5px;
+    }
+    
+    .job-meta i {
+      color: var(--primary);
+      margin-right: 5px;
+    }
+    
+    .hidden {
+      display: none;
+    }
+    
     /* Hide scrollbar */
     ::-webkit-scrollbar { display: none; }
     body { -ms-overflow-style: none; scrollbar-width: none; }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .hero-section {
+        padding: 60px 0 30px;
+      }
+      
+      .navbar-brand {
+        font-size: 1.5rem;
+      }
+      
+      .filter-toggle {
+        padding: 10px 15px;
+        font-size: 0.9rem;
+      }
+    }
+    
+    .filter-container {
+      margin-bottom: 25px;
+    }
   </style>
 </head>
 <body>
   <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-3">
-    <a class="navbar-brand fw-bold" href="#">AuraJobs</a>
-    <div class="ms-auto text-white text-end">
-      <small>📞 Customer Support / Add Jobs: <b>8087804339</b></small>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light px-3 py-2">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="#">
+        <i class="fas fa-briefcase me-2"></i>Jobify
+      </a>
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto me-4">
+          <li class="nav-item">
+            <a class="nav-link active" href="#">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Jobs</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Companies</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Blog</a>
+          </li>
+        </ul>
+        <div class="d-flex align-items-center">
+          <span class="support-badge"><i class="fas fa-phone-alt me-1"></i> Support: 8087804339</span>
+        </div>
+      </div>
     </div>
   </nav>
 
-  <!-- Filters -->
-  <div class="container mt-4">
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="container">
+      <h1 class="display-5 fw-bold mb-3">Find Your <span class="text-primary">Dream Job</span> Today</h1>
+      <p class="lead mb-4">Discover thousands of job opportunities from top companies around the world</p>
+      
+      <div class="search-bar">
+        <input type="text" class="form-control" id="searchInput" placeholder="Job title, keywords, or company">
+        <button class="btn btn-primary" id="searchButton"><i class="fas fa-search me-2"></i>Search</button>
+      </div>
+      
+      <div class="d-flex flex-wrap justify-content-center gap-2 mt-3">
+        <span class="badge bg-light text-dark p-2">Remote</span>
+        <span class="badge bg-light text-dark p-2">Full-Time</span>
+        <span class="badge bg-light text-dark p-2">Internship</span>
+        <span class="badge bg-light text-dark p-2">Part-Time</span>
+        <span class="badge bg-light text-dark p-2">Contract</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <div class="container mb-5 mt-4">
     <div class="row">
-      <div class="col-md-3 mb-3">
-        <div class="filter-box">
-          <h6 class="fw-bold mb-3">Filters</h6>
-          <div class="mb-3">
-            <label class="form-label">Job Type</label>
-            <select class="form-select">
-              <option>All</option>
-              <option>Full-Time</option>
-              <option>Part-Time</option>
-              <option>Remote</option>
-              <option>Internship</option>
-            </select>
+      <div class="col-12">
+        <!-- Filter Toggle Button -->
+        <button class="filter-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse" aria-expanded="false" aria-controls="filterCollapse">
+          <i class="fas fa-filter me-2"></i>Show Filters
+        </button>
+        
+        <!-- Filter Collapse Section -->
+        <div class="collapse" id="filterCollapse">
+          <div class="filter-box">
+            <div class="filter-header">
+              <h5 class="fw-bold mb-0"><i class="fas fa-filter me-2"></i>Filters</h5>
+              <a href="#" class="text-primary text-decoration-none" id="resetLink">Reset</a>
+            </div>
+            
+            <div class="filter-section">
+              <h6 class="filter-title"><i class="fas fa-briefcase me-2"></i>Job Type</h6>
+              <div class="form-check mb-2">
+                <input class="form-check-input filter-option" type="checkbox" id="fulltime" value="Full-Time">
+                <label class="form-check-label" for="fulltime">Full-Time</label>
+              </div>
+              <div class="form-check mb-2">
+                <input class="form-check-input filter-option" type="checkbox" id="parttime" value="Part-Time">
+                <label class="form-check-label" for="parttime">Part-Time</label>
+              </div>
+              <div class="form-check mb-2">
+                <input class="form-check-input filter-option" type="checkbox" id="remote" value="Remote">
+                <label class="form-check-label" for="remote">Remote</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input filter-option" type="checkbox" id="internship" value="Internship">
+                <label class="form-check-label" for="internship">Internship</label>
+              </div>
+            </div>
+            
+            <div class="filter-section">
+              <h6 class="filter-title"><i class="fas fa-map-marker-alt me-2"></i>Location</h6>
+              <select class="form-select" id="locationFilter">
+                <option value="">All Locations</option>
+                <option value="Remote">Remote</option>
+                <option value="Mumbai">Mumbai</option>
+                <option value="Bangalore">Bangalore</option>
+                <option value="Delhi">Delhi</option>
+                <option value="Hyderabad">Hyderabad</option>
+                <option value="Chennai">Chennai</option>
+                <option value="Pune">Pune</option>
+              </select>
+            </div>
+            
+            <div class="filter-section">
+              <h6 class="filter-title"><i class="fas fa-money-bill-wave me-2"></i>Salary Range</h6>
+              <select class="form-select" id="salaryFilter">
+                <option value="any">Any</option>
+                <option value="10-25">₹10k – ₹25k</option>
+                <option value="25-50">₹25k – ₹50k</option>
+                <option value="50-100">₹50k – ₹1L</option>
+                <option value="100+">₹1L+</option>
+              </select>
+            </div>
+            
+            <button class="btn btn-primary apply-btn" id="applyFilters"><i class="fas fa-check-circle me-2"></i>Apply Filters</button>
+            <button class="btn reset-btn" id="resetFilters"><i class="fas fa-redo me-2"></i>Reset Filters</button>
           </div>
-          <div class="mb-3">
-            <label class="form-label">Location</label>
-            <input type="text" class="form-control" placeholder="Enter city">
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Salary Range</label>
-            <select class="form-select">
-              <option>Any</option>
-              <option>₹10k – ₹25k</option>
-              <option>₹25k – ₹50k</option>
-              <option>₹50k – ₹1L</option>
-              <option>₹1L+</option>
-            </select>
-          </div>
-          <button class="btn btn-primary w-100">Apply Filters</button>
         </div>
       </div>
+    </div>
 
+    <div class="row">
       <!-- Job Listings -->
-      <div class="col-md-9">
-        <div class="row g-4">
-          <div class="col-md-6">
-            <div class="job-card">
-              <h5 class="fw-bold">Frontend Developer</h5>
-              <p class="text-muted mb-1">🏢 Company: TechNova Solutions</p>
-              <p class="text-muted">Remote • ₹40k – ₹60k</p>
-              <p>Build user-friendly interfaces using React, Bootstrap, and modern UI frameworks.</p>
-              <a href="https://wa.me/918087804339?text=Hi%20I%20am%20interested%20in%20the%20Frontend%20Developer%20job%20at%20TechNova%20Solutions" target="_blank" class="btn btn-sm btn-success">Apply Now</a>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="job-card">
-              <h5 class="fw-bold">Data Analyst</h5>
-              <p class="text-muted mb-1">🏢 Company: Insight Analytics</p>
-              <p class="text-muted">Mumbai • ₹35k – ₹55k</p>
-              <p>Work with large datasets, perform analysis, and create reports for business insights.</p>
-              <a href="https://wa.me/918087804339?text=Hi%20I%20am%20interested%20in%20the%20Data%20Analyst%20job%20at%20Insight%20Analytics" target="_blank" class="btn btn-sm btn-success">Apply Now</a>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="job-card">
-              <h5 class="fw-bold">UI/UX Designer</h5>
-              <p class="text-muted mb-1">🏢 Company: Creative Minds Studio</p>
-              <p class="text-muted">Bangalore • ₹45k – ₹70k</p>
-              <p>Design wireframes, prototypes, and improve overall product experience.</p>
-              <a href="https://wa.me/918087804339?text=Hi%20I%20am%20interested%20in%20the%20UI%2FUX%20Designer%20job%20at%20Creative%20Minds%20Studio" target="_blank" class="btn btn-sm btn-success">Apply Now</a>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="job-card">
-              <h5 class="fw-bold">Digital Marketing Manager</h5>
-              <p class="text-muted mb-1">🏢 Company: GrowthHackers Media</p>
-              <p class="text-muted">Delhi • ₹50k – ₹80k</p>
-              <p>Manage SEO, SEM, social media campaigns, and brand growth strategies.</p>
-              <a href="https://wa.me/918087804339?text=Hi%20I%20am%20interested%20in%20the%20Digital%20Marketing%20Manager%20job%20at%20GrowthHackers%20Media" target="_blank" class="btn btn-sm btn-success">Apply Now</a>
-            </div>
-          </div>
+      <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h4 class="fw-bold">Latest Job Openings <span class="badge bg-primary" id="jobCount">10</span></h4>
+          <span class="text-muted">Sorted by: Newest first</span>
+        </div>
+        
+        <div class="row" id="jobListings">
+          <!-- Job listings will be populated by JavaScript -->
+        </div>
+        
+        <div class="view-more">
+          <button class="btn view-more-btn" id="loadMore"><i class="fas fa-plus-circle me-2"></i>Load More Jobs</button>
         </div>
       </div>
     </div>
@@ -135,5 +444,298 @@
 
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- Custom JavaScript -->
+  <script>
+    // Sample job data
+    const jobs = [
+      {
+        id: 1,
+        title: "Frontend Developer",
+        company: "TechNova Solutions",
+        location: "Remote",
+        salary: "40k – 60k",
+        salaryRange: "25-50",
+        type: "Full-Time",
+        description: "Build user-friendly interfaces using React, Bootstrap, and modern UI frameworks.",
+        tags: ["Remote", "React", "Senior"],
+        posted: "2 days ago"
+      },
+      {
+        id: 2,
+        title: "Data Analyst",
+        company: "Insight Analytics",
+        location: "Mumbai",
+        salary: "35k – 55k",
+        salaryRange: "25-50",
+        type: "Full-Time",
+        description: "Work with large datasets, perform analysis, and create reports for business insights.",
+        tags: ["Mumbai", "Python", "Mid Level"],
+        posted: "3 days ago"
+      },
+      {
+        id: 3,
+        title: "UI/UX Designer",
+        company: "Creative Minds Studio",
+        location: "Bangalore",
+        salary: "45k – 70k",
+        salaryRange: "25-50",
+        type: "Full-Time",
+        description: "Design wireframes, prototypes, and improve overall product experience.",
+        tags: ["Bangalore", "Figma", "Mid Level"],
+        posted: "5 days ago"
+      },
+      {
+        id: 4,
+        title: "Digital Marketing Manager",
+        company: "GrowthHackers Media",
+        location: "Delhi",
+        salary: "50k – 80k",
+        salaryRange: "50-100",
+        type: "Full-Time",
+        description: "Manage SEO, SEM, social media campaigns, and brand growth strategies.",
+        tags: ["Delhi", "SEO", "Senior"],
+        posted: "1 week ago"
+      },
+      {
+        id: 5,
+        title: "Backend Developer",
+        company: "CodeLabs Technologies",
+        location: "Hyderabad",
+        salary: "50k – 75k",
+        salaryRange: "50-100",
+        type: "Full-Time",
+        description: "Develop scalable server-side applications and APIs using Node.js and Express.",
+        tags: ["Hybrid", "Node.js", "Senior"],
+        posted: "2 days ago"
+      },
+      {
+        id: 6,
+        title: "DevOps Engineer",
+        company: "DataSphere Cloud",
+        location: "Remote",
+        salary: "60k – 90k",
+        salaryRange: "50-100",
+        type: "Full-Time",
+        description: "Implement CI/CD pipelines, manage cloud infrastructure, and ensure system reliability.",
+        tags: ["Remote", "AWS", "Senior"],
+        posted: "4 days ago"
+      },
+      {
+        id: 7,
+        title: "Content Writer",
+        company: "Creative Content Co.",
+        location: "Remote",
+        salary: "25k – 40k",
+        salaryRange: "25-50",
+        type: "Part-Time",
+        description: "Create engaging content for blogs, social media, and marketing materials.",
+        tags: ["Remote", "Writing", "Entry Level"],
+        posted: "3 days ago"
+      },
+      {
+        id: 8,
+        title: "Product Manager",
+        company: "Innovate Solutions",
+        location: "Chennai",
+        salary: "80k – 1.2L",
+        salaryRange: "100+",
+        type: "Full-Time",
+        description: "Lead product development from conception to launch and iteration.",
+        tags: ["Chennai", "Product", "Senior"],
+        posted: "6 days ago"
+      },
+      {
+        id: 9,
+        title: "Graphic Designer",
+        company: "Visual Studio Inc.",
+        location: "Pune",
+        salary: "30k – 45k",
+        salaryRange: "25-50",
+        type: "Part-Time",
+        description: "Create visually appealing graphics for digital and print media.",
+        tags: ["Pune", "Design", "Mid Level"],
+        posted: "1 day ago"
+      },
+      {
+        id: 10,
+        title: "Sales Executive",
+        company: "SalesForce India",
+        location: "Delhi",
+        salary: "35k – 55k",
+        salaryRange: "25-50",
+        type: "Full-Time",
+        description: "Build client relationships and drive sales for our product portfolio.",
+        tags: ["Delhi", "Sales", "Entry Level"],
+        posted: "4 days ago"
+      }
+    ];
+
+    // Variables to track state
+    let visibleJobs = 6;
+    let filteredJobs = [...jobs];
+    
+    // DOM elements
+    const jobListingsElement = document.getElementById('jobListings');
+    const jobCountElement = document.getElementById('jobCount');
+    const loadMoreButton = document.getElementById('loadMore');
+    const applyFiltersButton = document.getElementById('applyFilters');
+    const resetFiltersButton = document.getElementById('resetFilters');
+    const resetLink = document.getElementById('resetLink');
+    const filterToggle = document.querySelector('.filter-toggle');
+    const filterCollapse = document.getElementById('filterCollapse');
+    const searchInput = document.getElementById('searchInput');
+    const searchButton = document.getElementById('searchButton');
+    
+    // Update toggle button text based on collapse state
+    filterCollapse.addEventListener('show.bs.collapse', function () {
+      filterToggle.innerHTML = '<i class="fas fa-filter me-2"></i>Hide Filters';
+    });
+    
+    filterCollapse.addEventListener('hide.bs.collapse', function () {
+      filterToggle.innerHTML = '<i class="fas fa-filter me-2"></i>Show Filters';
+    });
+    
+    // Function to render jobs
+    function renderJobs(jobsToRender) {
+      jobListingsElement.innerHTML = '';
+      
+      if (jobsToRender.length === 0) {
+        jobListingsElement.innerHTML = `
+          <div class="col-12 text-center py-5">
+            <i class="fas fa-search fa-3x text-muted mb-3"></i>
+            <h4 class="text-muted">No jobs found</h4>
+            <p class="text-muted">Try adjusting your filters to see more results</p>
+          </div>
+        `;
+        return;
+      }
+      
+      const jobsToShow = jobsToRender.slice(0, visibleJobs);
+      
+      jobsToShow.forEach(job => {
+        const jobElement = document.createElement('div');
+        jobElement.className = 'col-md-6';
+        jobElement.innerHTML = `
+          <div class="job-card">
+            <div class="company-logo">${job.company.substring(0, 2)}</div>
+            <h5 class="fw-bold">${job.title}</h5>
+            <p class="text-muted mb-2">${job.company}</p>
+            <div class="mb-3">
+              <span class="job-type-tag">${job.type}</span>
+              ${job.tags.map(tag => `<span class="job-tag">${tag}</span>`).join('')}
+            </div>
+            <p class="mb-3 job-meta"><i class="fas fa-map-marker-alt"></i> ${job.location} • <i class="fas fa-money-bill-wave"></i> ₹${job.salary}</p>
+            <p class="mb-3">${job.description}</p>
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="fw-bold text-primary">Posted ${job.posted}</span>
+              <a href="https://wa.me/918087804339?text=Hi%20I%20am%20interested%20in%20the%20${encodeURIComponent(job.title)}%20job%20at%20${encodeURIComponent(job.company)}" target="_blank" class="btn apply-btn">Apply Now</a>
+            </div>
+          </div>
+        `;
+        jobListingsElement.appendChild(jobElement);
+      });
+      
+      jobCountElement.textContent = jobsToRender.length;
+      
+      // Show or hide load more button
+      if (visibleJobs >= jobsToRender.length) {
+        loadMoreButton.classList.add('hidden');
+      } else {
+        loadMoreButton.classList.remove('hidden');
+      }
+    }
+    
+    // Function to apply filters
+    function applyFilters() {
+      const selectedTypes = Array.from(document.querySelectorAll('input.filter-option[type="checkbox"]:checked'))
+        .map(checkbox => checkbox.value);
+      
+      const locationFilter = document.getElementById('locationFilter').value;
+      const salaryFilter = document.getElementById('salaryFilter').value;
+      const searchText = searchInput.value.trim().toLowerCase();
+      
+      filteredJobs = jobs.filter(job => {
+        // Filter by job type
+        if (selectedTypes.length > 0 && !selectedTypes.includes(job.type)) {
+          return false;
+        }
+        
+        // Filter by location
+        if (locationFilter && job.location !== locationFilter) {
+          return false;
+        }
+        
+        // Filter by salary
+        if (salaryFilter !== 'any') {
+          if (salaryFilter === '10-25' && job.salaryRange !== '10-25') return false;
+          if (salaryFilter === '25-50' && job.salaryRange !== '25-50') return false;
+          if (salaryFilter === '50-100' && job.salaryRange !== '50-100') return false;
+          if (salaryFilter === '100+' && job.salaryRange !== '100+') return false;
+        }
+        
+        // Filter by search text
+        if (searchText) {
+          const searchTerms = searchText.split(/\s+/).filter(term => term.length > 0);
+          const jobText = `${job.title} ${job.company} ${job.description} ${job.tags.join(' ')} ${job.type}`.toLowerCase();
+          
+          // All search terms must be present in the job text
+          return searchTerms.every(term => jobText.includes(term));
+        }
+        
+        return true;
+      });
+      
+      visibleJobs = 6;
+      renderJobs(filteredJobs);
+      
+      // Collapse the filter section after applying filters
+      const bsCollapse = new bootstrap.Collapse(filterCollapse, {
+        toggle: false
+      });
+      bsCollapse.hide();
+    }
+    
+    // Function to reset filters
+    function resetFilters() {
+      document.querySelectorAll('input.filter-option[type="checkbox"]').forEach(checkbox => {
+        checkbox.checked = false;
+      });
+      
+      document.getElementById('locationFilter').value = '';
+      document.getElementById('salaryFilter').value = 'any';
+      searchInput.value = '';
+      
+      filteredJobs = [...jobs];
+      visibleJobs = 6;
+      renderJobs(filteredJobs);
+    }
+    
+    // Function to load more jobs
+    function loadMoreJobs() {
+      visibleJobs += 6;
+      renderJobs(filteredJobs);
+    }
+    
+    // Event listeners
+    applyFiltersButton.addEventListener('click', applyFilters);
+    resetFiltersButton.addEventListener('click', resetFilters);
+    resetLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      resetFilters();
+    });
+    loadMoreButton.addEventListener('click', loadMoreJobs);
+    searchButton.addEventListener('click', applyFilters);
+    
+    // Search when Enter key is pressed
+    searchInput.addEventListener('keyup', (e) => {
+      if (e.key === 'Enter') {
+        applyFilters();
+      }
+    });
+    
+    // Initial render
+    renderJobs(filteredJobs);
+  </script>
 </body>
 </html>
